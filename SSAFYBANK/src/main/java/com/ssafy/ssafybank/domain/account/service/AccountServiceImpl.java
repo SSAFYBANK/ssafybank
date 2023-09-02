@@ -1,6 +1,9 @@
 package com.ssafy.ssafybank.domain.account.service;
 
 import com.ssafy.ssafybank.domain.account.dto.request.AccountCreateRequestDto;
+import com.ssafy.ssafybank.domain.account.dto.request.AccountGetPasswordReqDto;
+import com.ssafy.ssafybank.domain.account.dto.response.AccountGetPasswordRespDto;
+import com.ssafy.ssafybank.domain.account.entity.Account;
 import com.ssafy.ssafybank.domain.account.repository.AccountRepository;
 import com.ssafy.ssafybank.domain.accountHolder.entity.AccountHolder;
 import com.ssafy.ssafybank.domain.accountHolder.repository.AccountHolderRepository;
@@ -50,5 +53,27 @@ public class AccountServiceImpl implements AccountService {
             //예외 종류 별로 code를 정해서 줘야할듯??
             throw new CustomApiException("accessToken정보가 잘못되었습니다.");
         }
+    }
+
+    @Override
+    public AccountGetPasswordRespDto getPassword(AccountGetPasswordReqDto accountGetPasswordReqDto, String memberUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+        if (memberOptional.isPresent()) {
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountGetPasswordReqDto.getAccountHolderUuid());
+            if(accountHolder == null){
+                throw new CustomApiException("예금주가 잘못되었습니다.");
+            }
+            Account account = accountRepository.findAccountByAccountNumAndAccountHolderId(accountGetPasswordReqDto.getAccountNum(), accountHolder);
+            if(account == null){
+                throw new CustomApiException("예금주 정보와 계좌번호가 일치하지 않습니다");
+            }
+            AccountGetPasswordRespDto accountGetPasswordRespDto = new AccountGetPasswordRespDto(account.getAccountPassword() , account.getAccountNum());
+            return  accountGetPasswordRespDto;
+        } else {
+            //멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
+            //예외 종류 별로 code를 정해서 줘야할듯??
+            throw new CustomApiException("accessToken정보가 잘못되었습니다.");
+        }
+
     }
 }
