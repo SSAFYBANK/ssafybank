@@ -22,7 +22,7 @@ import static javax.persistence.FetchType.LAZY;
 public class Account {
 	@Id
 	@GeneratedValue
-	private   Long accountId;
+	private Long accountId;
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "account_holder_id")
 	private AccountHolder accountHolderId;
@@ -32,7 +32,7 @@ public class Account {
 	@JoinColumn(name = "bank_id")
 	private Bank bankId;
 	@Column(nullable = false)
-	private   Integer accountPassword;
+	private String accountPassword;
 	@Column(nullable = false)
 	private   Long balance;
 	@Column(nullable = false)
@@ -43,7 +43,7 @@ public class Account {
 	@JoinColumn(name = "member_id")
 	private Member memberId;
 	@Builder
-	public Account(Long accountId, AccountHolder accountHolderId, String accountNum, Integer accountPassword,Bank bankId, Long balance, LocalDateTime createdDate, Member memberId) {
+	public Account(Long accountId, AccountHolder accountHolderId, String accountNum, String accountPassword,Bank bankId, Long balance, LocalDateTime createdDate, Member memberId) {
 		this.accountId = accountId;
 		this.accountHolderId = accountHolderId;
 		this.accountNum = accountNum;

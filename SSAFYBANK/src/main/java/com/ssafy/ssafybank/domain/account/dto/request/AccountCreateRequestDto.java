@@ -25,7 +25,7 @@ public class AccountCreateRequestDto {
     @NotNull
     private Integer bankCode;
     @NotNull
-    private Integer accountPassword;
+    private String accountPassword;
 
     private BankRepository bankRepository;
     private AccountHolderRepository accountHolderRepository;

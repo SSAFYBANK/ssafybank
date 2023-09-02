@@ -19,5 +19,5 @@ public class AccountDeleteRequestDto {
     @NotNull
     private String accountNum;
     @NotNull
-    private Integer accountPassword;
+    private String accountPassword;
 }

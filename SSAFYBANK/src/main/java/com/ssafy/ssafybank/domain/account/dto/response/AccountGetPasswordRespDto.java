@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class AccountGetPasswordRespDto {
 
-    private Integer password;
+    private String password;
 
     private String accountNum;
 }

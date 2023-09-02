@@ -50,8 +50,8 @@ public class AccountServiceImpl implements AccountService {
             if(accountHolder == null){
                 throw new CustomApiException("예금주가 잘못되었습니다.");
             }
-            Integer accountPassword = accountCreateRequestDto.getAccountPassword();
-            if (Integer.toString(accountPassword).length() != 4) {
+            String accountPassword = accountCreateRequestDto.getAccountPassword();
+            if (accountPassword.length() != 4) {
                 throw new CustomApiException("비밀번호는 4글자만 가능합니다.");
             }
             accountRepository.save(accountCreateRequestDto.toAccountEntity(member, accountHolder, bank));
@@ -190,7 +190,7 @@ public class AccountServiceImpl implements AccountService {
             String accountHolderUuid = accountDeleteRequestDto.getAccountHolderUuid();
             Integer bankCode = accountDeleteRequestDto.getBankCode();
             String accountNum = accountDeleteRequestDto.getAccountNum();
-            Integer accountPassword = accountDeleteRequestDto.getAccountPassword();
+            String accountPassword = accountDeleteRequestDto.getAccountPassword();
 
             Bank bank = bankRepository.findByBankCode(bankCode);
             if (bank == null) {
