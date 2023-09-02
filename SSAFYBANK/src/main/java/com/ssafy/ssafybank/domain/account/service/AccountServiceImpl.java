@@ -31,9 +31,18 @@ public class AccountServiceImpl implements AccountService {
             Member member = memberOptional.get();
             Integer bankCode = accountCreateRequestDto.getBankCode();
             Bank bank = bankRepository.findByBankCode(bankCode);
+            if(bank == null){
+                throw new CustomApiException("은행 코드가 잘못되었습니다.");
+            }
             String accountHolderUuid = accountCreateRequestDto.getAccountHolderUuid();
             AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountHolderUuid);
+            if(accountHolder == null){
+                throw new CustomApiException("예금주가 잘못되었습니다.");
+            }
             Integer accountPassword = accountCreateRequestDto.getAccountPassword();
+            if (Integer.toString(accountPassword).length() != 4) {
+                throw new CustomApiException("비밀번호는 4글자만 가능합니다.");
+            }
             accountRepository.save(accountCreateRequestDto.toAccountEntity(member, accountHolder, bank));
             return true;
         } else {

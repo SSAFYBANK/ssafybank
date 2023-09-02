@@ -9,6 +9,9 @@ import com.ssafy.ssafybank.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Random;
 
@@ -16,8 +19,12 @@ import java.util.Random;
 @AllArgsConstructor
 @Getter
 public class AccountCreateRequestDto {
+    @NotNull
+    @NotEmpty
     private String accountHolderUuid;
+    @NotNull
     private Integer bankCode;
+    @NotNull
     private Integer accountPassword;
 
     private BankRepository bankRepository;
