@@ -32,6 +32,10 @@ public class AccountHolder {
 	@JoinColumn(name = "member_id")
 	private Member memberId;
 
+	@Column(nullable = false)
+	private String accountHolderUuid;
+
+
 	@Builder
 	public AccountHolder(Long accountHolderId, String accountHolderName, LocalDateTime createdDate, Member memberId) {
 		this.accountHolderId = accountHolderId;
