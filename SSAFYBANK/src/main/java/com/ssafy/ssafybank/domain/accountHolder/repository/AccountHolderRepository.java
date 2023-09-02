@@ -10,4 +10,6 @@ import java.util.Optional;
 
 public interface AccountHolderRepository extends JpaRepository<AccountHolder, Long> {
    Optional<List<AccountHolder>> findAccountHoldersByMemberId(Member member);
+
+   Optional<AccountHolder> findAccountHolderByMemberIdAndAccountHolderNameAndAccountHolderUuid(Member member , String AHN, String AHU);
 }

@@ -1,6 +1,7 @@
 package com.ssafy.ssafybank.domain.accountHolder.controller;
 
 import com.ssafy.ssafybank.domain.accountHolder.dto.request.AccountHolderCreate;
+import com.ssafy.ssafybank.domain.accountHolder.dto.request.AccountHolderDelete;
 import com.ssafy.ssafybank.domain.accountHolder.dto.response.AccountHolderListRespDto;
 import com.ssafy.ssafybank.domain.accountHolder.service.AccountHolderService;
 import com.ssafy.ssafybank.global.ex.ResponseDto;
@@ -23,6 +24,7 @@ public class AccountHolderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createAccountHolder(@RequestBody @Valid AccountHolderCreate accountHolderCreate, BindingResult bindingResult ) {
+        System.out.println("ww" + accountHolderCreate.getAHN());
         String memberUuid = "1"; //강제로 준 값 로그인 구현 시 이 부분만 바뀜
         Boolean isTrue = accountHolderService.createAccountHolder(accountHolderCreate , memberUuid);
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", null), HttpStatus.OK);
@@ -36,5 +38,11 @@ public class AccountHolderController {
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", accountHolderListRespDtosList), HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteAccountHolder(@RequestBody @Valid AccountHolderDelete accountHolderDelete, BindingResult bindingResult ) {
+        String memberUuid = "1";
+        Boolean isTrue = accountHolderService.deleteAccountHolder(accountHolderDelete , memberUuid);
+        return new ResponseEntity<>(new ResponseDto<>(1, "성공", null), HttpStatus.OK);
+    }
 
 }

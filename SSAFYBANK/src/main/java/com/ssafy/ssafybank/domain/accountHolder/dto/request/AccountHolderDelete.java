@@ -13,18 +13,16 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AccountHolderCreate {
+public class AccountHolderDelete {
     @JsonProperty("AHN")
     @NotNull
     @Size(max = 20)
     private String AHN;
 
+    @JsonProperty("AHT")
+    @NotNull
+    @Size(max = 100)
+    private String AHT;
 
-    public AccountHolder toAccountHolderEntity(Member member , String accountHolderUuid){
-        return AccountHolder.builder().
-                accountHolderName(this.AHN).
-                memberId(member).
-                accountHolderUuid(accountHolderUuid).
-                build();
-    }
+
 }

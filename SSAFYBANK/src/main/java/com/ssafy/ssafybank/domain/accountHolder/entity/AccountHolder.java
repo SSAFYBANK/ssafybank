@@ -37,10 +37,11 @@ public class AccountHolder {
 
 
 	@Builder
-	public AccountHolder(Long accountHolderId, String accountHolderName, LocalDateTime createdDate, Member memberId) {
+	public AccountHolder(Long accountHolderId, String accountHolderName, LocalDateTime createdDate, Member memberId, String accountHolderUuid) {
 		this.accountHolderId = accountHolderId;
 		this.accountHolderName = accountHolderName;
 		this.createdDate = createdDate;
 		this.memberId = memberId;
+		this.accountHolderUuid = accountHolderUuid;
 	}
 }

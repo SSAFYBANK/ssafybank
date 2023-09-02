@@ -1,6 +1,7 @@
 package com.ssafy.ssafybank.domain.accountHolder.service;
 
 import com.ssafy.ssafybank.domain.accountHolder.dto.request.AccountHolderCreate;
+import com.ssafy.ssafybank.domain.accountHolder.dto.request.AccountHolderDelete;
 import com.ssafy.ssafybank.domain.accountHolder.dto.response.AccountHolderListRespDto;
 import com.ssafy.ssafybank.domain.accountHolder.entity.AccountHolder;
 import com.ssafy.ssafybank.domain.accountHolder.repository.AccountHolderRepository;
@@ -14,6 +15,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -29,9 +31,8 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-            String accountName = accountHolderCreate.getAccountHolderName();
-
-            accountHolderRepository.save(accountHolderCreate.toAccountHolderEntity(member));
+            String accountUuid = UUID.randomUUID().toString();
+            accountHolderRepository.save(accountHolderCreate.toAccountHolderEntity(member, accountUuid));
 
             return true; // Account holder creation successful
         } else {
@@ -66,5 +67,31 @@ public class AccountHolderServiceImpl implements AccountHolderService {
         }
 
 
+    }
+    @Transactional
+    @Override
+    public Boolean deleteAccountHolder(AccountHolderDelete accountHolderDelete, String memberUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+
+
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            String accountName = accountHolderDelete.getAHN();
+            String accountUuid = accountHolderDelete.getAHT();
+            Optional<AccountHolder> accountHolderOptional = accountHolderRepository.findAccountHolderByMemberIdAndAccountHolderNameAndAccountHolderUuid(member , accountName , accountUuid);
+            if(accountHolderOptional.isPresent()){
+                AccountHolder accountHolder = accountHolderOptional.get();
+                accountHolderRepository.delete(accountHolder); // Account holder deletion
+                return true; // Account
+            }
+            else {
+                throw new CustomApiException("예금주 토큰정보가 잘못되었습니다.");
+            }
+
+        } else {
+            //멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
+            //예외 종류 별로 code를 정해서 줘야할듯??
+            throw new CustomApiException("accessToken정보가 잘못되었습니다.");
+        }
     }
 }
