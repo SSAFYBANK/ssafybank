@@ -13,8 +13,8 @@ import javax.persistence.*;
 @Entity
 public class Bank {
 
-	@GeneratedValue
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private	Long bankId;
 	@Column(nullable = false)
 	private	String bankName;
