@@ -1,6 +1,7 @@
 package com.ssafy.ssafybank.domain.account.service;
 
 import com.ssafy.ssafybank.domain.account.dto.request.AccountCreateRequestDto;
+import com.ssafy.ssafybank.domain.account.dto.request.AccountDeleteRequestDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountGetPasswordReqDto;
 import com.ssafy.ssafybank.domain.account.dto.response.AccountGetPasswordRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.GetAccountRespDto;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -177,5 +179,45 @@ public class AccountServiceImpl implements AccountService {
             return new PageInfo(isNext, totalCnt);
         }
         throw new CustomApiException("accessToken정보가 잘못되었습니다.");
+    }
+
+    @Transactional
+    @Override
+    public Boolean deleteAccount(AccountDeleteRequestDto accountDeleteRequestDto, String memberUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            String accountHolderUuid = accountDeleteRequestDto.getAccountHolderUuid();
+            Integer bankCode = accountDeleteRequestDto.getBankCode();
+            String accountNum = accountDeleteRequestDto.getAccountNum();
+            Integer accountPassword = accountDeleteRequestDto.getAccountPassword();
+
+            Bank bank = bankRepository.findByBankCode(bankCode);
+            if (bank == null) {
+                throw new CustomApiException("은행 정보를 찾을 수 없습니다.");
+            }
+
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountHolderUuid);
+            if (accountHolder == null) {
+                throw new CustomApiException("예금주 정보를 찾을 수 없습니다.");
+            }
+
+            Account account = accountRepository.findAccountByAccountNumAndAccountHolderId(accountNum, accountHolder);
+
+            if (account != null) {
+                // 비밀번호 확인
+                if (account.getAccountPassword().equals(accountPassword)) {
+                    // 비밀번호 일치하면 계좌 삭제
+                    accountRepository.delete(account);
+                    return true;
+                } else {
+                    throw new CustomApiException("비밀번호가 일치하지 않습니다.");
+                }
+            } else {
+                throw new CustomApiException("계좌 정보를 찾을 수 없습니다.");
+            }
+        } else {
+            throw new CustomApiException("accessToken정보가 잘못되었습니다.");
+        }
     }
 }

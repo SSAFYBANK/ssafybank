@@ -1,13 +1,12 @@
 package com.ssafy.ssafybank.domain.account.controller;
 
 import com.ssafy.ssafybank.domain.account.dto.request.AccountCreateRequestDto;
+import com.ssafy.ssafybank.domain.account.dto.request.AccountDeleteRequestDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountGetPasswordReqDto;
 import com.ssafy.ssafybank.domain.account.dto.response.AccountGetPasswordRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.GetAccountRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.PageInfo;
 import com.ssafy.ssafybank.domain.account.service.AccountService;
-import com.ssafy.ssafybank.domain.accountHolder.dto.response.AccountHolderListRespDto;
-import com.ssafy.ssafybank.domain.bank.repository.BankRepository;
 import com.ssafy.ssafybank.global.ex.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -75,5 +74,16 @@ public class AccountController {
         response.put("accounts", getAccountRespDtos);
         response.put("pageInfo", pageInfo);
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", response), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteAccount(@RequestBody @Valid AccountDeleteRequestDto accountDeleteRequestDto, BindingResult bindingResult) {
+        String memberUuid = "1"; // 강제로 준 값, 로그인 구현 시 이 부분만 바뀜
+        Boolean isSuccess = accountService.deleteAccount(accountDeleteRequestDto, memberUuid);
+        if (isSuccess) {
+            return new ResponseEntity<>(new ResponseDto<>(1, "계좌 삭제 성공", null), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(0, "계좌 삭제 실패", null), HttpStatus.BAD_REQUEST);
+        }
     }
 }
