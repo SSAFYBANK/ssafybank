@@ -40,7 +40,7 @@ public class AccountCreateRequestDto {
                 .balance(1000000L)
                 .memberId(member)
                 .accountNum(accountNum)
-                .account_status(false)
+                .accountStatus(false)
                 .build();
     }
 

@@ -27,6 +27,7 @@ public class AccountHolderCreate {
                 accountHolderName(this.AHN).
                 memberId(member).
                 accountHolderUuid(accountHolderUuid).
+                accountHolderStatus(false).
                 build();
     }
 }
