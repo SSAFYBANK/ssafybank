@@ -38,12 +38,13 @@ public class Account {
 	@Column(nullable = false)
 	@CreatedDate
 	private   LocalDateTime createdDate;
-
+	@Column(nullable = false)
+	private Boolean account_status = false;
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "member_id")
 	private Member memberId;
 	@Builder
-	public Account(Long accountId, AccountHolder accountHolderId, String accountNum, String accountPassword,Bank bankId, Long balance, LocalDateTime createdDate, Member memberId) {
+	public Account(Long accountId, AccountHolder accountHolderId, String accountNum, String accountPassword,Bank bankId, Long balance, LocalDateTime createdDate, Member memberId,Boolean account_status) {
 		this.accountId = accountId;
 		this.accountHolderId = accountHolderId;
 		this.accountNum = accountNum;
@@ -52,6 +53,7 @@ public class Account {
 		this.balance = balance;
 		this.createdDate = createdDate;
 		this.memberId = memberId;
+		this.account_status = account_status;
 	}
 
 	// 입금 메서드
@@ -71,5 +73,10 @@ public class Account {
 			throw new IllegalArgumentException("잔액이 부족합니다.");
 		}
 		this.balance -= amount;
+	}
+
+	//비활성화
+	public void deactivateAccount() {
+		this.account_status = true;
 	}
 }

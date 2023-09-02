@@ -93,20 +93,22 @@ public class AccountServiceImpl implements AccountService {
             Member member = memberOptional.get();
         Page<Account> accountList = accountRepository.findAccountsByMemberId(member,page);
         List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
-        for(Account account : accountList){
-            String accountHolderName = account.getAccountHolderId().getAccountHolderName();
-            String accountNum = account.getAccountNum();
-            String bankName = account.getBankId().getBankName();
-            Long balance = account.getBalance();
+        for(Account account : accountList) {
+//            if (account.getAccount_status() == false) { //status가 활성화상태이면
+                String accountHolderName = account.getAccountHolderId().getAccountHolderName();
+                String accountNum = account.getAccountNum();
+                String bankName = account.getBankId().getBankName();
+                Long balance = account.getBalance();
 
-            GetAccountRespDto getAccountRespDto = GetAccountRespDto
-                    .builder()
-                    .accountHolderName(accountHolderName)
-                    .accountNum(accountNum)
-                    .bankName(bankName)
-                    .balance(balance)
-                    .build();
-        getAccountRespDtos.add(getAccountRespDto);
+                GetAccountRespDto getAccountRespDto = GetAccountRespDto
+                        .builder()
+                        .accountHolderName(accountHolderName)
+                        .accountNum(accountNum)
+                        .bankName(bankName)
+                        .balance(balance)
+                        .build();
+                getAccountRespDtos.add(getAccountRespDto);
+//            }
         }
         return getAccountRespDtos;
         } else {
@@ -208,7 +210,7 @@ public class AccountServiceImpl implements AccountService {
                 // 비밀번호 확인
                 if (account.getAccountPassword().equals(accountPassword)) {
                     // 비밀번호 일치하면 계좌 삭제
-                    accountRepository.delete(account);
+                    account.deactivateAccount();
                     return true;
                 } else {
                     throw new CustomApiException("비밀번호가 일치하지 않습니다.");

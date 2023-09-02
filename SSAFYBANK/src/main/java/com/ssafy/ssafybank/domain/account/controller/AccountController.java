@@ -76,7 +76,7 @@ public class AccountController {
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", response), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<?> deleteAccount(@RequestBody @Valid AccountDeleteRequestDto accountDeleteRequestDto, BindingResult bindingResult) {
         String memberUuid = "1"; // 강제로 준 값, 로그인 구현 시 이 부분만 바뀜
         Boolean isSuccess = accountService.deleteAccount(accountDeleteRequestDto, memberUuid);
