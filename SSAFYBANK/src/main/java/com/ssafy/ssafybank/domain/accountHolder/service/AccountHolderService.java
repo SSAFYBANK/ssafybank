@@ -1,7 +1,7 @@
-package com.ssafy.ssafybank.domain.member.service;
+package com.ssafy.ssafybank.domain.accountHolder.service;
 
 import com.ssafy.ssafybank.domain.accountHolder.dto.request.AccountHolderCreate;
 
-public interface AccountService {
+public interface AccountHolderService {
     Boolean createAccountHolder(AccountHolderCreate accountHolderCreate, String memberUuid);
 }

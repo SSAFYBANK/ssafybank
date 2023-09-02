@@ -1,7 +1,6 @@
-package com.ssafy.ssafybank.domain.member.service;
+package com.ssafy.ssafybank.domain.accountHolder.service;
 
 import com.ssafy.ssafybank.domain.accountHolder.dto.request.AccountHolderCreate;
-import com.ssafy.ssafybank.domain.accountHolder.entity.AccountHolder;
 import com.ssafy.ssafybank.domain.accountHolder.repository.AccountHolderRepository;
 import com.ssafy.ssafybank.domain.member.entity.Member;
 import com.ssafy.ssafybank.domain.member.repository.MemberRepository;
@@ -14,12 +13,13 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class AccountServiceImpl implements AccountService{
+public class AccountHolderServiceImpl implements AccountHolderService {
     private final MemberRepository memberRepository;
     private final AccountHolderRepository accountHolderRepository;
     @Transactional
     @Override
     public Boolean createAccountHolder(AccountHolderCreate accountHolderCreate, String memberUuid) {
+        System.out.println("ww" + memberUuid);
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
 
 
