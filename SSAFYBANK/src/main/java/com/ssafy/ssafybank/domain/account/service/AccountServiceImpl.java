@@ -2,7 +2,9 @@ package com.ssafy.ssafybank.domain.account.service;
 
 import com.ssafy.ssafybank.domain.account.dto.request.AccountCreateRequestDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountDeleteRequestDto;
+import com.ssafy.ssafybank.domain.account.dto.request.AccountGetBalanceReqDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountGetPasswordReqDto;
+import com.ssafy.ssafybank.domain.account.dto.response.AccountGetBalanceRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.AccountGetPasswordRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.GetAccountRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.PageInfo;
@@ -220,5 +222,29 @@ public class AccountServiceImpl implements AccountService {
         } else {
             throw new CustomApiException("accessToken정보가 잘못되었습니다.");
         }
+    }
+
+    @Override
+    public AccountGetBalanceRespDto getBalance(AccountGetBalanceReqDto accountGetBalanceReqDto, String memberUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+        if (memberOptional.isPresent()) {
+            Account account = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(accountGetBalanceReqDto.getAccountNum());
+            if(account == null){
+                throw new CustomApiException("계좌 정보를 찾을 수 없습니다.");
+            }
+            if(!account.getAccountPassword().equals(accountGetBalanceReqDto.getAccountPass())){
+                throw new CustomApiException("비밀번호가 일치하지 않습니다.");
+            }
+            AccountGetBalanceRespDto accountGetBalanceRespDto = AccountGetBalanceRespDto
+                    .builder()
+                    .accountNum(account.getAccountNum())
+                    .balance(account.getBalance())
+                    .bankName(account.getBankId().getBankName())
+                    .accountHolderName(account.getAccountHolderId().getAccountHolderName())
+                    .build();
+
+            return  accountGetBalanceRespDto;
+        }
+        throw new CustomApiException("accessToken정보가 잘못되었습니다.");
     }
 }
