@@ -34,9 +34,11 @@ public class Transfer {
 	private Long depositAccountBalance;
 	@Column(nullable = false)
 	private LocalDateTime createdDate;
+	@Column
+	private String transferUuid;
 
 	@Builder
-	public Transfer(Long transferId, Account withdrawAccountId, Account depositAccountId, int amount, String flag, Long withdrawAccountBalance, Long depositAccountBalance, LocalDateTime createdDate) {
+	public Transfer(Long transferId, Account withdrawAccountId, Account depositAccountId, int amount, String flag, Long withdrawAccountBalance, Long depositAccountBalance, LocalDateTime createdDate, String transferUuid) {
 		this.transferId = transferId;
 		this.withdrawAccountId = withdrawAccountId;
 		this.depositAccountId = depositAccountId;
@@ -45,5 +47,6 @@ public class Transfer {
 		this.withdrawAccountBalance = withdrawAccountBalance;
 		this.depositAccountBalance = depositAccountBalance;
 		this.createdDate = createdDate;
+		this.transferUuid = transferUuid;
 	}
 }

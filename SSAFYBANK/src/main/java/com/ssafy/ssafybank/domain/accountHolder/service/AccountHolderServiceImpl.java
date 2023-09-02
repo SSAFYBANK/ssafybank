@@ -44,20 +44,24 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 
     @Transactional
     @Override
-    public AccountHolderListRespDto getAccountHolderList(String memberUuid) {
+    public List<AccountHolderListRespDto> getAccountHolderList(String memberUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-            List<String> accountHolderList = new ArrayList<>();
+            List<AccountHolderListRespDto> accountHolderRespList = new ArrayList<>();
             Optional<List<AccountHolder>> accountHoldersOptional = accountHolderRepository.findAccountHoldersByMemberId(member);
             if(accountHoldersOptional.isPresent()){
                 List<AccountHolder> accountHolders = accountHoldersOptional.get();
                 for(AccountHolder accountHolder : accountHolders) {
-                    accountHolderList.add(accountHolder.getAccountHolderName());
+                    AccountHolderListRespDto respDto = new AccountHolderListRespDto(
+                            accountHolder.getAccountHolderName(),
+                            accountHolder.getAccountHolderUuid()
+                    );
+                    accountHolderRespList.add(respDto);
                 }
-                return new AccountHolderListRespDto(accountHolderList);
-            }else{
-                return new AccountHolderListRespDto(new ArrayList<>());
+                return accountHolderRespList;
+            } else {
+                return new ArrayList<>();  // 빈 리스트를 반환
             }
 
         } else {

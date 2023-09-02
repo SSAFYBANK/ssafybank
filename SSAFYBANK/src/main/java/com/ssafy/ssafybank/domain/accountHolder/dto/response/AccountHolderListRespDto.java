@@ -15,9 +15,7 @@ import java.util.List;
 @Getter
 public class AccountHolderListRespDto {
 
-    @NotNull
-    @Size(max = 20)
-    private List<String> accountHolderName;
+    private String accountHolderName;
 
-
+    private String accountHolderUuid;
 }

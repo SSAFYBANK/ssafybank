@@ -33,7 +33,8 @@ public class AccountHolderController {
     @GetMapping(value = "/getList", produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> getAccountHolderList() {
         String memberUuid = "1";
-        AccountHolderListRespDto accountHolderListRespDtosList = new AccountHolderListRespDto();
+        List<AccountHolderListRespDto> accountHolderListRespDtosList = new ArrayList<>();
+
         accountHolderListRespDtosList = accountHolderService.getAccountHolderList(memberUuid);
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", accountHolderListRespDtosList), HttpStatus.OK);
     }

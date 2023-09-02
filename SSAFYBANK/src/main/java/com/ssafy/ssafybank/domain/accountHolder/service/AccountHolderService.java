@@ -9,7 +9,7 @@ import java.util.List;
 public interface AccountHolderService {
     Boolean createAccountHolder(AccountHolderCreate accountHolderCreate, String memberUuid);
 
-    AccountHolderListRespDto getAccountHolderList(String memberUuid);
+    List<AccountHolderListRespDto> getAccountHolderList(String memberUuid);
 
     Boolean deleteAccountHolder(AccountHolderDelete accountHolderDelete, String memberUuid);
 }

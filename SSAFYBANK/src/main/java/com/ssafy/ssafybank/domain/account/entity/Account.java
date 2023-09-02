@@ -28,7 +28,7 @@ public class Account {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "account_holder_id")
 	private AccountHolder accountHolderId;
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private Integer accountNum;
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "bank_id")

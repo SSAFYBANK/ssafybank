@@ -1,4 +1,4 @@
-package com.ssafy.ssafybank.domain.accountHolder.dto.request;
+package com.ssafy.ssafybank.domain.transfer.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ssafy.ssafybank.domain.accountHolder.entity.AccountHolder;
@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AccountHolderCreate {
+public class TransferDepositReqDto {
     @JsonProperty("AHN")
     @NotNull
     @NotEmpty
