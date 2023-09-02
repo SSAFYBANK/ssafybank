@@ -3,6 +3,8 @@ package com.ssafy.ssafybank.domain.account.service;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountCreateRequestDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountGetPasswordReqDto;
 import com.ssafy.ssafybank.domain.account.dto.response.AccountGetPasswordRespDto;
+import com.ssafy.ssafybank.domain.account.dto.response.GetAccountRespDto;
+import com.ssafy.ssafybank.domain.account.dto.response.PageInfo;
 import com.ssafy.ssafybank.domain.account.entity.Account;
 import com.ssafy.ssafybank.domain.account.repository.AccountRepository;
 import com.ssafy.ssafybank.domain.accountHolder.entity.AccountHolder;
@@ -13,9 +15,13 @@ import com.ssafy.ssafybank.domain.member.entity.Member;
 import com.ssafy.ssafybank.domain.member.repository.MemberRepository;
 import com.ssafy.ssafybank.global.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -54,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
             throw new CustomApiException("accessToken정보가 잘못되었습니다.");
         }
     }
-
+    @Transactional
     @Override
     public AccountGetPasswordRespDto getPassword(AccountGetPasswordReqDto accountGetPasswordReqDto, String memberUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
@@ -75,5 +81,51 @@ public class AccountServiceImpl implements AccountService {
             throw new CustomApiException("accessToken정보가 잘못되었습니다.");
         }
 
+    }
+
+    @Transactional
+    @Override
+    public List<GetAccountRespDto> getAccountList(Pageable page, String memberUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+        Page<Account> accountList = accountRepository.findAccountsByMemberId(member,page);
+        List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
+        for(Account account : accountList){
+            String accountHolderName = account.getAccountHolderId().getAccountHolderName();
+            String accountNum = account.getAccountNum();
+            String bankName = account.getBankId().getBankName();
+            Long balance = account.getBalance();
+
+            GetAccountRespDto getAccountRespDto = GetAccountRespDto
+                    .builder()
+                    .accountHolderName(accountHolderName)
+                    .accountNum(accountNum)
+                    .bankName(bankName)
+                    .balance(balance)
+                    .build();
+        getAccountRespDtos.add(getAccountRespDto);
+        }
+        return getAccountRespDtos;
+        } else {
+            //멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
+            //예외 종류 별로 code를 정해서 줘야할듯??
+            throw new CustomApiException("accessToken정보가 잘못되었습니다.");
+        }
+
+    }
+
+    @Override
+    public PageInfo getPageInfo(Pageable fixedPageable, String memberUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            Page<Account> accountList = accountRepository.findAccountsByMemberId(member, fixedPageable);
+            int totalCnt = accountRepository.countByMemberId(member);
+            boolean isNext = !accountList.isLast();
+
+            return new PageInfo(isNext, totalCnt);
+        }
+        throw new CustomApiException("accessToken정보가 잘못되었습니다.");
     }
 }
