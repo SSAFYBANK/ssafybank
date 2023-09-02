@@ -24,7 +24,6 @@ public class AccountHolderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createAccountHolder(@RequestBody @Valid AccountHolderCreate accountHolderCreate, BindingResult bindingResult ) {
-        System.out.println("ww" + accountHolderCreate.getAHN());
         String memberUuid = "1"; //강제로 준 값 로그인 구현 시 이 부분만 바뀜
         Boolean isTrue = accountHolderService.createAccountHolder(accountHolderCreate , memberUuid);
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", null), HttpStatus.OK);

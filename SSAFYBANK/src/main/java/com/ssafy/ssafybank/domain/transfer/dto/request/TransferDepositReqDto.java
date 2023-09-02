@@ -22,7 +22,7 @@ public class TransferDepositReqDto {
     private String senderAccountNum;
 
     @NotNull
-    private Integer senderAccountPass;
+    private String senderAccountPass;
 
     @NotNull
     private Integer recBankCode;
@@ -53,9 +53,10 @@ public class TransferDepositReqDto {
                 .amount(this.getDepositAmount())
                 .depositAccountId(rec)
                 .depositAccountBalance(recBalance)
-                .flag("입금")
                 .withdrawAccountId(sender)
                 .withdrawAccountBalance(senderBalance)
+                .depositAccountContent(this.recCont)
+                .withdrawAccountContent(this.senderCont)
                 .build();
     }
 }
