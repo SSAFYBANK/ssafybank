@@ -17,5 +17,9 @@ public interface AccountService {
     List<GetAccountRespDto> getAccountList(Pageable page, String memberUuid);
 
     PageInfo getPageInfo(Pageable fixedPageable, String memberUuid);
+
+    List<GetAccountRespDto> getHolderAccountList(Pageable fixedPageable, String memberUuid, String accountHolderUuid);
+
+    PageInfo getPageInfoHolder(Pageable fixedPageable, String memberUuid, String accountHolderUuid);
 }
 

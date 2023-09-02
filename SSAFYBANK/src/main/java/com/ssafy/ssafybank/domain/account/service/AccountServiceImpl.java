@@ -128,4 +128,54 @@ public class AccountServiceImpl implements AccountService {
         }
         throw new CustomApiException("accessToken정보가 잘못되었습니다.");
     }
+
+    @Override
+    public List<GetAccountRespDto> getHolderAccountList(Pageable fixedPageable, String memberUuid, String accountHolderUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+        if (memberOptional.isPresent()) {
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountHolderUuid);
+            if(accountHolder == null){
+                throw new CustomApiException("예금주 키 정보가 잘못되었습니다.");
+            }
+            Page<Account> accountList = accountRepository.findAccountsByAccountHolderId(accountHolder, fixedPageable);
+            List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
+            for(Account account : accountList){
+                String accountHolderName = account.getAccountHolderId().getAccountHolderName();
+                String accountNum = account.getAccountNum();
+                String bankName = account.getBankId().getBankName();
+                Long balance = account.getBalance();
+
+                GetAccountRespDto getAccountRespDto = GetAccountRespDto
+                        .builder()
+                        .accountHolderName(accountHolderName)
+                        .accountNum(accountNum)
+                        .bankName(bankName)
+                        .balance(balance)
+                        .build();
+                getAccountRespDtos.add(getAccountRespDto);
+            }
+            return getAccountRespDtos;
+        } else {
+            //멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
+            //예외 종류 별로 code를 정해서 줘야할듯??
+            throw new CustomApiException("accessToken정보가 잘못되었습니다.");
+        }
+    }
+
+    @Override
+    public PageInfo getPageInfoHolder(Pageable fixedPageable, String memberUuid, String accountHolderUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+        if (memberOptional.isPresent()) {
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountHolderUuid);
+            if(accountHolder == null){
+                throw new CustomApiException("예금주 키 정보가 잘못되었습니다.");
+            }
+            Page<Account> accountList = accountRepository.findAccountsByAccountHolderId(accountHolder, fixedPageable);
+            int totalCnt = accountRepository.countByAccountHolderId(accountHolder);
+            boolean isNext = !accountList.isLast();
+
+            return new PageInfo(isNext, totalCnt);
+        }
+        throw new CustomApiException("accessToken정보가 잘못되었습니다.");
+    }
 }

@@ -18,16 +18,13 @@ public class GetAccountRespDto {
 
     private Long balance;
 
-    private Boolean isNext;
 
-    private int totalCnt;
     @Builder
-    public GetAccountRespDto(String accountHolderName, String bankName, String accountNum, Long balance, Boolean isNext, int totalCnt) {
+    public GetAccountRespDto(String accountHolderName, String bankName, String accountNum, Long balance) {
         this.accountHolderName = accountHolderName;
         this.bankName = bankName;
         this.accountNum = accountNum;
         this.balance = balance;
-        this.isNext = isNext;
-        this.totalCnt = totalCnt;
+
     }
 }

@@ -45,14 +45,31 @@ public class AccountController {
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", accountCreateRequestDto), HttpStatus.OK);
     }
 
+
     @GetMapping(value = "/getAccountList/{page}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getAccountHolderList(@PathVariable int page) {
+    public ResponseEntity<?> getAccountList(@PathVariable int page) {
 
         String memberUuid = "1";
         Pageable fixedPageable = PageRequest.of(page, 10, Sort.by("accountId").ascending());
         List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
         getAccountRespDtos = accountService.getAccountList(fixedPageable, memberUuid);
         PageInfo pageInfo = accountService.getPageInfo(fixedPageable, memberUuid);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("accounts", getAccountRespDtos);
+        response.put("pageInfo", pageInfo);
+        return new ResponseEntity<>(new ResponseDto<>(1, "성공", response), HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/getHolderAccountList/{accountHolderUuid}/{page}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getHolderAccountList( @PathVariable String accountHolderUuid,@PathVariable int page) {
+
+        String memberUuid = "1";
+        Pageable fixedPageable = PageRequest.of(page, 10, Sort.by("accountId").ascending());
+        List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
+        getAccountRespDtos = accountService.getHolderAccountList(fixedPageable, memberUuid,accountHolderUuid);
+        PageInfo pageInfo = accountService.getPageInfoHolder(fixedPageable, memberUuid,accountHolderUuid);
 
         Map<String, Object> response = new HashMap<>();
         response.put("accounts", getAccountRespDtos);
