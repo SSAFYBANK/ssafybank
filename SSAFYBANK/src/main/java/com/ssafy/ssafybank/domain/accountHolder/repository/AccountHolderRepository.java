@@ -11,5 +11,5 @@ public interface AccountHolderRepository extends JpaRepository<AccountHolder, Lo
    Optional<List<AccountHolder>> findAccountHoldersByMemberIdAndAccountHolderStatusIsFalse(Member member);
    AccountHolder findByAccountHolderUuidAndAccountHolderStatusIsFalse(String accountHolderUuid);
    Optional<AccountHolder> findAccountHolderByMemberIdAndAccountHolderNameAndAccountHolderUuidAndAccountHolderStatusIsFalse(Member member , String AHN, String AHU);
-   int countAccountHolderByMemberId(Member member);
+   int countAccountHolderByMemberIdAndAccountHolderStatusIsFalse(Member member);
 }

@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
             if(accountHolder == null){
                 throw new CustomApiException("예금주가 잘못되었습니다.");
             }
-            int cnt = accountRepository.countByAccountHolderId(accountHolder);
+            int cnt = accountRepository.countByAccountHolderIdAndAccountStatusIsFalse(accountHolder);
             if(cnt>=5){
                 throw new CustomApiException("예금주당 계좌는 최대 5개 만들 수 있습니다.");
             }
