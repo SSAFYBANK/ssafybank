@@ -24,4 +24,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     int countByAccountHolderIdAndAccountStatusIsFalse(AccountHolder accountHolder);
 
     List<Account> findAccountsByAccountHolderIdAndAccountStatusIsFalse(AccountHolder accountHolder);
+
+    int countByAccountHolderId(AccountHolder accountHolder);
+
 }
