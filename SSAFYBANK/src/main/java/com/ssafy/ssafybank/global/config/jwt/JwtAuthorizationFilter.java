@@ -47,7 +47,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 토큰이 존재함
             log.debug("디버그 : 토큰이 존재함");
 
-            String token = request.getHeader(JwtVO.HEADER).replace(JwtVO.TOKEN_PREFIX, "");
+            String token = request.getHeader(JwtVO.HEADER);
             LoginUser loginUser = JwtProcess.verifyAccessToken(token);//검증
             log.debug("디버그 : 토큰이 검증이 완료됨");
 

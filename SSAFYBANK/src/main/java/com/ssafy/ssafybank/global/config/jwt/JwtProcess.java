@@ -28,7 +28,7 @@ public class JwtProcess {
                 .sign(Algorithm.HMAC512(JwtVO.SECRET));
 
         System.out.println(JwtVO.TOKEN_PREFIX + jwtToken);
-        return JwtVO.TOKEN_PREFIX + jwtToken;
+        return jwtToken;
     }
 
 

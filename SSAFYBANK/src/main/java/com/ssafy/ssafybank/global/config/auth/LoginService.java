@@ -31,6 +31,9 @@ public class LoginService implements UserDetailsService {
     public UserDetails loadUserByUsername(String code) throws UsernameNotFoundException {
         String accessToken = kakaoLoginService.getKakaoAccessToken(code);
         String kakaoId = kakaoLoginService.createKakaoUser(accessToken);
+        if(kakaoId.equals("") || kakaoId.equals(null)){
+            throw new InternalAuthenticationServiceException("로그인실패");
+        }
         System.out.println("kakaoId: " + kakaoId);
         System.out.println("loginService");
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
