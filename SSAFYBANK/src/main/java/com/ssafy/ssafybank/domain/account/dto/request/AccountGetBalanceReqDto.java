@@ -15,7 +15,7 @@ public class AccountGetBalanceReqDto {
     @NotNull
     @NotEmpty
     @Size(max = 5)
-    private String accountPass;
+    private String accountPassword;
     @NotNull
     @NotEmpty
     @Size(max = 20)

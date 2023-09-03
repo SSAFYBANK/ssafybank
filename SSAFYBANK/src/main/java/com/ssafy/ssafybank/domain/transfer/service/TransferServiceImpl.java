@@ -43,9 +43,9 @@ public class TransferServiceImpl implements  TransferService{
             //출금 계좌
             Account senderAccount = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(transferDepositReqDto.getSenderAccountNum());
             //입금 계좌
-            Account recAccount = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(transferDepositReqDto.getRecAccountNum());
+            Account recAccount = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(transferDepositReqDto.getReceiverAccountNum());
             // 출금계좌와 입금계좌가 동일하면 안됨
-            if(transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getRecAccountNum())){
+            if(transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getReceiverAccountNum())){
                 throw new CustomApiException("입 출금 계좌가 중복됩니다.");
             }
             // 출금계좌 확인
@@ -58,12 +58,12 @@ public class TransferServiceImpl implements  TransferService{
             }
             //은행 확인
             System.out.println("ww" + recAccount.getBankId().getBankCode() );
-            System.out.println("ww" + transferDepositReqDto.getRecBankCode() );
-            if(recAccount.getBankId().getBankCode() != transferDepositReqDto.getRecBankCode()){
+            System.out.println("ww" + transferDepositReqDto.getReceiverBankCode() );
+            if(recAccount.getBankId().getBankCode() != transferDepositReqDto.getReceiverBankCode() ){
                 throw new CustomApiException("은행이 일치하지 않습니다.");
             }
             //비밀번호 확인
-            if(!senderAccount.getAccountPassword().equals(transferDepositReqDto.getSenderAccountPass())){
+            if(!senderAccount.getAccountPassword().equals(transferDepositReqDto.getSenderAccountPassword())){
                 throw new CustomApiException("비밀번호가 일치하지 않습니다.");
             }
             //출금계좌 소유자랑 입금계좌 소유자가 로그인한 사용자것인지 확인
@@ -104,7 +104,7 @@ public class TransferServiceImpl implements  TransferService{
             if(account == null){
                 throw new CustomApiException("계좌번호가 잘못되었습니다.");
             }
-            if(!account.getAccountPassword().equals(getTransferListReqDto.getAccountPass())){
+            if(!account.getAccountPassword().equals(getTransferListReqDto.getAccountPassword())){
                 throw new CustomApiException("비밀번호가 일치하지 않습니다.");
             }
             Page<Transfer> transferList = transferRepository.findTransfersByDepositAccountIdOrWithdrawAccountId(account, fixedPageable);
@@ -153,7 +153,7 @@ public class TransferServiceImpl implements  TransferService{
             if(account == null){
                 throw new CustomApiException("계좌번호가 잘못되었습니다.");
             }
-            if(!account.getAccountPassword().equals(getTransferListReqDto.getAccountPass())){
+            if(!account.getAccountPassword().equals(getTransferListReqDto.getAccountPassword())){
                 throw new CustomApiException("비밀번호가 일치하지 않습니다.");
             }
             Page<Transfer> transferList = transferRepository.findTransfersByDepositAccountIdOrWithdrawAccountId(account, fixedPageable);

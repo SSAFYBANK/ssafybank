@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class TransferDepositRespDto {
 
-    private String recName;
+    private String receiverName;
 
     private Long depositAmount;
 

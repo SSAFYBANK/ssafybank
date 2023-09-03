@@ -22,15 +22,15 @@ public class TransferDepositReqDto {
     private String senderAccountNum;
 
     @NotNull
-    private String senderAccountPass;
+    private String senderAccountPassword;
 
     @NotNull
-    private Integer recBankCode;
+    private Integer receiverBankCode;
 
     @NotNull
     @NotEmpty
     @Size(max = 20)
-    private String recAccountNum;
+    private String receiverAccountNum;
 
     @NotNull
     @Max(100000000)
@@ -40,12 +40,12 @@ public class TransferDepositReqDto {
     @NotNull
     @NotEmpty
     @Size(max = 50)
-    private String senderCont;
+    private String senderContent;
 
     @NotNull
     @NotEmpty
     @Size(max = 50)
-    private String recCont;
+    private String receiverContent;
 
     public Transfer toTransferEntity(String transferUuid , Account sender , Account rec, Long senderBalance , Long recBalance){
         return Transfer.builder()
@@ -55,8 +55,8 @@ public class TransferDepositReqDto {
                 .depositAccountBalance(recBalance)
                 .withdrawAccountId(sender)
                 .withdrawAccountBalance(senderBalance)
-                .depositAccountContent(this.recCont)
-                .withdrawAccountContent(this.senderCont)
+                .depositAccountContent(this.receiverContent)
+                .withdrawAccountContent(this.senderContent)
                 .build();
     }
 }

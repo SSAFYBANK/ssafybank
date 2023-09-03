@@ -19,7 +19,7 @@ public class GetTransferListReqDto {
     private String accountNum;
 
     @NotNull
-    private String accountPass;
+    private String accountPassword;
 
 
 }

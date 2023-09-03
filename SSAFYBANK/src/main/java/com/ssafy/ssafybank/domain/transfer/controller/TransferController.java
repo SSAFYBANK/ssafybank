@@ -11,6 +11,7 @@ import com.ssafy.ssafybank.domain.transfer.dto.request.TransferDepositReqDto;
 import com.ssafy.ssafybank.domain.transfer.dto.response.GetTransferListRespDto;
 import com.ssafy.ssafybank.domain.transfer.dto.response.TransferDepositRespDto;
 import com.ssafy.ssafybank.domain.transfer.service.TransferService;
+import com.ssafy.ssafybank.global.config.auth.LoginUser;
 import com.ssafy.ssafybank.global.ex.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,17 +38,17 @@ public class TransferController {
     private final TransferService transferService;
 
     @PostMapping("/deposit")
-    public ResponseEntity<?> createTransfer(@RequestBody @Valid TransferDepositReqDto transferDepositReqDto, BindingResult bindingResult ) {
+    public ResponseEntity<?> createTransfer(@RequestBody @Valid TransferDepositReqDto transferDepositReqDto, @AuthenticationPrincipal LoginUser loginUser, BindingResult bindingResult ) {
 
-        String memberUuid = "1"; //강제로 준 값 로그인 구현 시 이 부분만 바뀜
+        String memberUuid = loginUser.getMember().getMemberUuid();
         TransferDepositRespDto transferDepositRespDto = transferService.createTransfer(transferDepositReqDto , memberUuid);
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", transferDepositRespDto), HttpStatus.OK);
     }
 
     @PostMapping("/getList/{page}")
-    public ResponseEntity<?> getTransferList(@RequestBody @Valid GetTransferListReqDto getTransferListReqDto, BindingResult bindingResult ,@PathVariable int page) {
+    public ResponseEntity<?> getTransferList(@RequestBody @Valid GetTransferListReqDto getTransferListReqDto, @AuthenticationPrincipal LoginUser loginUser,BindingResult bindingResult ,@PathVariable int page) {
 
-        String memberUuid = "1"; //강제로 준 값 로그인 구현 시 이 부분만 바뀜
+        String memberUuid = loginUser.getMember().getMemberUuid();
         Pageable fixedPageable = PageRequest.of(page, 10, Sort.by("createdDate").descending());
         List<GetTransferListRespDto> transferList  = transferService.getTransferList(fixedPageable, getTransferListReqDto , memberUuid);
 
@@ -59,8 +61,8 @@ public class TransferController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteTranser(@RequestBody @Valid TransferDelete transferDelete, BindingResult bindingResult ) {
-        String memberUuid = "1";
+    public ResponseEntity<?> deleteTranser(@RequestBody @Valid TransferDelete transferDelete, @AuthenticationPrincipal LoginUser loginUser,BindingResult bindingResult ) {
+        String memberUuid = loginUser.getMember().getMemberUuid();
         Boolean isTrue = transferService.deleteTransfer(transferDelete , memberUuid);
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", null), HttpStatus.OK);
     }

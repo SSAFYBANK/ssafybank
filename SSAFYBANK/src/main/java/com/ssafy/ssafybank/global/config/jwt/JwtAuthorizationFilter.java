@@ -44,6 +44,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             throws IOException, ServletException {
 
         if (isHeaderVerify(request, response)) {
+
             // 토큰이 존재함
             log.debug("디버그 : 토큰이 존재함");
 
@@ -63,7 +64,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private boolean isHeaderVerify(HttpServletRequest request, HttpServletResponse response) {
         String header = request.getHeader(JwtVO.HEADER);
         //리프레시 토큰 헤더까지 추가
-        if (header == null || !header.startsWith(JwtVO.TOKEN_PREFIX) || !header.startsWith("RefreshToken")) {
+        if (header == null) {
             return false;
         } else {
             return true;

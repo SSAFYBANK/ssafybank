@@ -236,7 +236,7 @@ public class AccountServiceImpl implements AccountService {
             if(account == null){
                 throw new CustomApiException("계좌 정보를 찾을 수 없습니다.");
             }
-            if(!account.getAccountPassword().equals(accountGetBalanceReqDto.getAccountPass())){
+            if(!account.getAccountPassword().equals(accountGetBalanceReqDto.getAccountPassword())){
                 throw new CustomApiException("비밀번호가 일치하지 않습니다.");
             }
             AccountGetBalanceRespDto accountGetBalanceRespDto = AccountGetBalanceRespDto

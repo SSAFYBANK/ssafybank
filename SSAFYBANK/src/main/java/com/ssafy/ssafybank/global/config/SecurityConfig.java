@@ -76,7 +76,7 @@ public class SecurityConfig {
         });
 
         http.authorizeRequests()
-                .antMatchers("/api/**").authenticated() //포스트맨으로 http://localhost:8081/api/admin/dsd 이런식으로 테스트 해보면 403 에러 확인
+                .antMatchers("/v1/**").authenticated() //포스트맨으로 http://localhost:8081/api/admin/dsd 이런식으로 테스트 해보면 403 에러 확인
                 .antMatchers("/api/admin/**").hasRole("" + "ADMIN") // 최근 공식문서에서는 ROLE_ 안붙여도 됨
 
                 .anyRequest().permitAll(); //나머지 요청은 허용

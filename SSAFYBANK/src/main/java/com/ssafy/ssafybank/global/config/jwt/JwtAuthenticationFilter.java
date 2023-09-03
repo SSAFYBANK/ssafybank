@@ -56,6 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         log.debug("디버그 : attemptAuthentication 호출됨");
+        System.out.println("qweqweqwe");
         try {
             ObjectMapper om = new ObjectMapper();
 
