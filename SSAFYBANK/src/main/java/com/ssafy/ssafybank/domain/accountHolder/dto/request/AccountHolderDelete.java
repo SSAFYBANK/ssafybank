@@ -14,15 +14,15 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 public class AccountHolderDelete {
-    @JsonProperty("AHN")
+
     @NotNull
     @Size(max = 20)
-    private String AHN;
+    private String accountHolderName;
 
-    @JsonProperty("AHT")
+
     @NotNull
     @Size(max = 100)
-    private String AHT;
+    private String accountHolderToken;
 
 
 }

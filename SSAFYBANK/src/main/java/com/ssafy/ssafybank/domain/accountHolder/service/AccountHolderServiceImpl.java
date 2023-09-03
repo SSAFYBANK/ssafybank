@@ -87,8 +87,8 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-            String accountName = accountHolderDelete.getAHN();
-            String accountUuid = accountHolderDelete.getAHT();
+            String accountName = accountHolderDelete.getAccountHolderName();
+            String accountUuid = accountHolderDelete.getAccountHolderToken();
             Optional<AccountHolder> accountHolderOptional = accountHolderRepository.findAccountHolderByMemberIdAndAccountHolderNameAndAccountHolderUuidAndAccountHolderStatusIsFalse(member , accountName , accountUuid);
             if(accountHolderOptional.isPresent()){
                 AccountHolder accountHolder = accountHolderOptional.get();

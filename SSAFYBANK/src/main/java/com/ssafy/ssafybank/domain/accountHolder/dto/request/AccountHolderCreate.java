@@ -15,16 +15,16 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 public class AccountHolderCreate {
-    @JsonProperty("AHN")
+
     @NotNull
     @NotEmpty
     @Size(max = 20)
-    private String AHN;
+    private String accountHolderName;
 
 
     public AccountHolder toAccountHolderEntity(Member member , String accountHolderUuid){
         return AccountHolder.builder().
-                accountHolderName(this.AHN).
+                accountHolderName(this.accountHolderName).
                 memberId(member).
                 accountHolderUuid(accountHolderUuid).
                 accountHolderStatus(false).
