@@ -26,8 +26,8 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=0d71d6cba5e7587e9e8f923fe4fa9212"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:8080/login"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&client_id=e96444e9bce9fc9c391e1db8825252eb"); // TODO REST_API_KEY 입력
+            sb.append("&redirect_uri=http://localhost:5173/login"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -67,7 +67,6 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
 
     public String createKakaoUser(String token) {
-        System.out.println("comeemmcmd");
         String kakaoId = "";
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
