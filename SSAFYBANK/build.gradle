@@ -36,7 +36,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-
+	implementation 'com.vaadin.external.google:android-json:0.0.20131108.vaadin1'
 }
 
 tasks.named('test') {

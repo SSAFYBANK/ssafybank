@@ -50,6 +50,10 @@ public class AccountServiceImpl implements AccountService {
             if(accountHolder == null){
                 throw new CustomApiException("예금주가 잘못되었습니다.");
             }
+            int cnt = accountRepository.countByAccountHolderId(accountHolder);
+            if(cnt>=6){
+                throw new CustomApiException("예금주당 계좌는 최대 3개 만들 수 있습니다.");
+            }
             String accountPassword = accountCreateRequestDto.getAccountPassword();
             if (accountPassword.length() != 4) {
                 throw new CustomApiException("비밀번호는 4글자만 가능합니다.");
