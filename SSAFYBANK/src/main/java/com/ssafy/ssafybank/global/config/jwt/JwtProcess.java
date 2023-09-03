@@ -22,7 +22,7 @@ public class JwtProcess {
         String jwtToken = JWT.create()
                 .withSubject("ssafybank")//토큰의 제목
                 //1시간
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtVO.EXPIRATION_TIME))//만료시간= 헌재시간 + 유효기간
+               // .withExpiresAt(new Date(System.currentTimeMillis() + JwtVO.EXPIRATION_TIME))//만료시간= 헌재시간 + 유효기간
                 .withClaim("memberUuid", loginUser.getMember().getMemberUuid())///나중에 유유아이디로 바꾸자
                 .withClaim("role", loginUser.getMember().getRole() + "")//String이 되기 위해 + "" 붙여 주는 것 string이 들어와야 함
                 .sign(Algorithm.HMAC512(JwtVO.SECRET));
