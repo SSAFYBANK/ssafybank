@@ -2,7 +2,9 @@ package com.ssafy.ssafybank.domain.account.service;
 
 import com.ssafy.ssafybank.domain.account.dto.request.AccountCreateRequestDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountDeleteRequestDto;
+import com.ssafy.ssafybank.domain.account.dto.request.AccountGetBalanceReqDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountGetPasswordReqDto;
+import com.ssafy.ssafybank.domain.account.dto.response.AccountGetBalanceRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.AccountGetPasswordRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.GetAccountRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.PageInfo;
@@ -25,5 +27,7 @@ public interface AccountService {
     PageInfo getPageInfoHolder(Pageable fixedPageable, String memberUuid, String accountHolderUuid);
 
     Boolean deleteAccount(AccountDeleteRequestDto accountDeleteRequestDto, String memberUuid);
+
+    AccountGetBalanceRespDto getBalance(AccountGetBalanceReqDto accountGetBalanceReqDto, String memberUuid);
 }
 

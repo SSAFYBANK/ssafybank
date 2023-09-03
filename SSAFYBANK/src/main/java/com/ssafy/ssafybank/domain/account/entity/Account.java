@@ -39,12 +39,12 @@ public class Account {
 	@CreatedDate
 	private   LocalDateTime createdDate;
 	@Column(nullable = false)
-	private Boolean account_status = false;
+	private Boolean accountStatus = false;
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "member_id")
 	private Member memberId;
 	@Builder
-	public Account(Long accountId, AccountHolder accountHolderId, String accountNum, String accountPassword,Bank bankId, Long balance, LocalDateTime createdDate, Member memberId,Boolean account_status) {
+	public Account(Long accountId, AccountHolder accountHolderId, String accountNum, String accountPassword,Bank bankId, Long balance, LocalDateTime createdDate, Member memberId,Boolean accountStatus) {
 		this.accountId = accountId;
 		this.accountHolderId = accountHolderId;
 		this.accountNum = accountNum;
@@ -53,7 +53,7 @@ public class Account {
 		this.balance = balance;
 		this.createdDate = createdDate;
 		this.memberId = memberId;
-		this.account_status = account_status;
+		this.accountStatus = accountStatus;
 	}
 
 	// 입금 메서드
@@ -77,6 +77,6 @@ public class Account {
 
 	//비활성화
 	public void deactivateAccount() {
-		this.account_status = true;
+		this.accountStatus = true;
 	}
 }

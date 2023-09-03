@@ -2,7 +2,9 @@ package com.ssafy.ssafybank.domain.account.controller;
 
 import com.ssafy.ssafybank.domain.account.dto.request.AccountCreateRequestDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountDeleteRequestDto;
+import com.ssafy.ssafybank.domain.account.dto.request.AccountGetBalanceReqDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountGetPasswordReqDto;
+import com.ssafy.ssafybank.domain.account.dto.response.AccountGetBalanceRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.AccountGetPasswordRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.GetAccountRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.PageInfo;
@@ -85,5 +87,13 @@ public class AccountController {
         } else {
             return new ResponseEntity<>(new ResponseDto<>(0, "계좌 삭제 실패", null), HttpStatus.BAD_REQUEST);
         }
+    }
+    @PostMapping("/getBalance")
+    public ResponseEntity<?> getBalance(@RequestBody @Valid AccountGetBalanceReqDto accountGetBalanceReqDto, BindingResult bindingResult) {
+        String memberUuid = "1"; // 강제로 준 값, 로그인 구현 시 이 부분만 바뀜
+        AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalance(accountGetBalanceReqDto, memberUuid);
+
+            return new ResponseEntity<>(new ResponseDto<>(1, "성공", accountGetBalanceRespDto), HttpStatus.OK);
+
     }
 }

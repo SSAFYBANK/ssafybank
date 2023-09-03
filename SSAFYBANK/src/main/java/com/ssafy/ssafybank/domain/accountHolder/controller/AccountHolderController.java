@@ -38,7 +38,7 @@ public class AccountHolderController {
         return new ResponseEntity<>(new ResponseDto<>(1, "성공", accountHolderListRespDtosList), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<?> deleteAccountHolder(@RequestBody @Valid AccountHolderDelete accountHolderDelete, BindingResult bindingResult ) {
         String memberUuid = "1";
         Boolean isTrue = accountHolderService.deleteAccountHolder(accountHolderDelete , memberUuid);

@@ -2,7 +2,9 @@ package com.ssafy.ssafybank.domain.account.service;
 
 import com.ssafy.ssafybank.domain.account.dto.request.AccountCreateRequestDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountDeleteRequestDto;
+import com.ssafy.ssafybank.domain.account.dto.request.AccountGetBalanceReqDto;
 import com.ssafy.ssafybank.domain.account.dto.request.AccountGetPasswordReqDto;
+import com.ssafy.ssafybank.domain.account.dto.response.AccountGetBalanceRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.AccountGetPasswordRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.GetAccountRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.PageInfo;
@@ -21,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +47,7 @@ public class AccountServiceImpl implements AccountService {
                 throw new CustomApiException("은행 코드가 잘못되었습니다.");
             }
             String accountHolderUuid = accountCreateRequestDto.getAccountHolderUuid();
-            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountHolderUuid);
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(accountHolderUuid);
             if(accountHolder == null){
                 throw new CustomApiException("예금주가 잘못되었습니다.");
             }
@@ -71,11 +72,11 @@ public class AccountServiceImpl implements AccountService {
     public AccountGetPasswordRespDto getPassword(AccountGetPasswordReqDto accountGetPasswordReqDto, String memberUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
-            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountGetPasswordReqDto.getAccountHolderUuid());
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(accountGetPasswordReqDto.getAccountHolderUuid());
             if(accountHolder == null){
                 throw new CustomApiException("예금주가 잘못되었습니다.");
             }
-            Account account = accountRepository.findAccountByAccountNumAndAccountHolderId(accountGetPasswordReqDto.getAccountNum(), accountHolder);
+            Account account = accountRepository.findAccountByAccountNumAndAccountHolderIdAndAccountStatusIsFalse(accountGetPasswordReqDto.getAccountNum(), accountHolder);
             if(account == null){
                 throw new CustomApiException("예금주 정보와 계좌번호가 일치하지 않습니다");
             }
@@ -95,7 +96,7 @@ public class AccountServiceImpl implements AccountService {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-        Page<Account> accountList = accountRepository.findAccountsByMemberId(member,page);
+        Page<Account> accountList = accountRepository.findAccountsByMemberIdAndAccountStatusIsFalse(member,page);
         List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
         for(Account account : accountList) {
 //            if (account.getAccount_status() == false) { //status가 활성화상태이면
@@ -128,8 +129,8 @@ public class AccountServiceImpl implements AccountService {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-            Page<Account> accountList = accountRepository.findAccountsByMemberId(member, fixedPageable);
-            int totalCnt = accountRepository.countByMemberId(member);
+            Page<Account> accountList = accountRepository.findAccountsByMemberIdAndAccountStatusIsFalse(member, fixedPageable);
+            int totalCnt = accountRepository.countByMemberIdAndAccountStatusIsFalse(member);
             boolean isNext = !accountList.isLast();
 
             return new PageInfo(isNext, totalCnt);
@@ -141,11 +142,11 @@ public class AccountServiceImpl implements AccountService {
     public List<GetAccountRespDto> getHolderAccountList(Pageable fixedPageable, String memberUuid, String accountHolderUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
-            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountHolderUuid);
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(accountHolderUuid);
             if(accountHolder == null){
                 throw new CustomApiException("예금주 키 정보가 잘못되었습니다.");
             }
-            Page<Account> accountList = accountRepository.findAccountsByAccountHolderId(accountHolder, fixedPageable);
+            Page<Account> accountList = accountRepository.findAccountsByAccountHolderIdAndAccountStatusIsFalse(accountHolder, fixedPageable);
             List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
             for(Account account : accountList){
                 String accountHolderName = account.getAccountHolderId().getAccountHolderName();
@@ -174,12 +175,12 @@ public class AccountServiceImpl implements AccountService {
     public PageInfo getPageInfoHolder(Pageable fixedPageable, String memberUuid, String accountHolderUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
-            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountHolderUuid);
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(accountHolderUuid);
             if(accountHolder == null){
                 throw new CustomApiException("예금주 키 정보가 잘못되었습니다.");
             }
-            Page<Account> accountList = accountRepository.findAccountsByAccountHolderId(accountHolder, fixedPageable);
-            int totalCnt = accountRepository.countByAccountHolderId(accountHolder);
+            Page<Account> accountList = accountRepository.findAccountsByAccountHolderIdAndAccountStatusIsFalse(accountHolder, fixedPageable);
+            int totalCnt = accountRepository.countByAccountHolderIdAndAccountStatusIsFalse(accountHolder);
             boolean isNext = !accountList.isLast();
 
             return new PageInfo(isNext, totalCnt);
@@ -203,12 +204,12 @@ public class AccountServiceImpl implements AccountService {
                 throw new CustomApiException("은행 정보를 찾을 수 없습니다.");
             }
 
-            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuid(accountHolderUuid);
+            AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(accountHolderUuid);
             if (accountHolder == null) {
                 throw new CustomApiException("예금주 정보를 찾을 수 없습니다.");
             }
 
-            Account account = accountRepository.findAccountByAccountNumAndAccountHolderId(accountNum, accountHolder);
+            Account account = accountRepository.findAccountByAccountNumAndAccountHolderIdAndAccountStatusIsFalse(accountNum, accountHolder);
 
             if (account != null) {
                 // 비밀번호 확인
@@ -225,5 +226,29 @@ public class AccountServiceImpl implements AccountService {
         } else {
             throw new CustomApiException("accessToken정보가 잘못되었습니다.");
         }
+    }
+
+    @Override
+    public AccountGetBalanceRespDto getBalance(AccountGetBalanceReqDto accountGetBalanceReqDto, String memberUuid) {
+        Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
+        if (memberOptional.isPresent()) {
+            Account account = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(accountGetBalanceReqDto.getAccountNum());
+            if(account == null){
+                throw new CustomApiException("계좌 정보를 찾을 수 없습니다.");
+            }
+            if(!account.getAccountPassword().equals(accountGetBalanceReqDto.getAccountPass())){
+                throw new CustomApiException("비밀번호가 일치하지 않습니다.");
+            }
+            AccountGetBalanceRespDto accountGetBalanceRespDto = AccountGetBalanceRespDto
+                    .builder()
+                    .accountNum(account.getAccountNum())
+                    .balance(account.getBalance())
+                    .bankName(account.getBankId().getBankName())
+                    .accountHolderName(account.getAccountHolderId().getAccountHolderName())
+                    .build();
+
+            return  accountGetBalanceRespDto;
+        }
+        throw new CustomApiException("accessToken정보가 잘못되었습니다.");
     }
 }

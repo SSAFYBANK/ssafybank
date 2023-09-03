@@ -1,6 +1,5 @@
 package com.ssafy.ssafybank.domain.accountHolder.entity;
 
-import com.ssafy.ssafybank.domain.bank.entity.Bank;
 import com.ssafy.ssafybank.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,13 +34,21 @@ public class AccountHolder {
 	@Column(nullable = false)
 	private String accountHolderUuid;
 
+	@Column(nullable = false)
+	private Boolean accountHolderStatus = false;
+
 
 	@Builder
-	public AccountHolder(Long accountHolderId, String accountHolderName, LocalDateTime createdDate, Member memberId, String accountHolderUuid) {
+	public AccountHolder(Long accountHolderId, String accountHolderName, LocalDateTime createdDate, Member memberId, String accountHolderUuid,Boolean accountHolderStatus) {
 		this.accountHolderId = accountHolderId;
 		this.accountHolderName = accountHolderName;
 		this.createdDate = createdDate;
 		this.memberId = memberId;
 		this.accountHolderUuid = accountHolderUuid;
+		this.accountHolderStatus = accountHolderStatus;
+	}
+
+	public void deactivateAccountHolder() {
+		this.accountHolderStatus = true;
 	}
 }

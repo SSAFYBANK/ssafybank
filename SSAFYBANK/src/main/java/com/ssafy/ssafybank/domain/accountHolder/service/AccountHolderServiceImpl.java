@@ -1,5 +1,7 @@
 package com.ssafy.ssafybank.domain.accountHolder.service;
 
+import com.ssafy.ssafybank.domain.account.entity.Account;
+import com.ssafy.ssafybank.domain.account.repository.AccountRepository;
 import com.ssafy.ssafybank.domain.accountHolder.dto.request.AccountHolderCreate;
 import com.ssafy.ssafybank.domain.accountHolder.dto.request.AccountHolderDelete;
 import com.ssafy.ssafybank.domain.accountHolder.dto.response.AccountHolderListRespDto;
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class AccountHolderServiceImpl implements AccountHolderService {
     private final MemberRepository memberRepository;
     private final AccountHolderRepository accountHolderRepository;
+    private final AccountRepository accountRepository;
     @Transactional
     @Override
     public Boolean createAccountHolder(AccountHolderCreate accountHolderCreate, String memberUuid) {
@@ -53,7 +56,7 @@ public class AccountHolderServiceImpl implements AccountHolderService {
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             List<AccountHolderListRespDto> accountHolderRespList = new ArrayList<>();
-            Optional<List<AccountHolder>> accountHoldersOptional = accountHolderRepository.findAccountHoldersByMemberId(member);
+            Optional<List<AccountHolder>> accountHoldersOptional = accountHolderRepository.findAccountHoldersByMemberIdAndAccountHolderStatusIsFalse(member);
             if(accountHoldersOptional.isPresent()){
                 List<AccountHolder> accountHolders = accountHoldersOptional.get();
                 for(AccountHolder accountHolder : accountHolders) {
@@ -86,10 +89,16 @@ public class AccountHolderServiceImpl implements AccountHolderService {
             Member member = memberOptional.get();
             String accountName = accountHolderDelete.getAHN();
             String accountUuid = accountHolderDelete.getAHT();
-            Optional<AccountHolder> accountHolderOptional = accountHolderRepository.findAccountHolderByMemberIdAndAccountHolderNameAndAccountHolderUuid(member , accountName , accountUuid);
+            Optional<AccountHolder> accountHolderOptional = accountHolderRepository.findAccountHolderByMemberIdAndAccountHolderNameAndAccountHolderUuidAndAccountHolderStatusIsFalse(member , accountName , accountUuid);
             if(accountHolderOptional.isPresent()){
                 AccountHolder accountHolder = accountHolderOptional.get();
-                accountHolderRepository.delete(accountHolder); // Account holder deletion
+                List<Account> accounts = accountRepository.findAccountsByAccountHolderIdAndAccountStatusIsFalse(accountHolder);
+                for (Account account : accounts) {
+                    account.deactivateAccount();
+                }
+                accountHolder.deactivateAccountHolder();// Account holder deletion
+
+
                 return true; // Account
             }
             else {

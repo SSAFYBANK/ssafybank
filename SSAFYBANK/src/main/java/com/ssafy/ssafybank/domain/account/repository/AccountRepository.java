@@ -11,17 +11,17 @@ import java.util.List;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    Account findAccountByAccountNum(String accountNum);
+    Account findAccountByAccountNumAndAccountStatusIsFalse(String accountNum);
 
-    Account findAccountByAccountNumAndAccountHolderId(String accountNum , AccountHolder accountHolder);
+    Account findAccountByAccountNumAndAccountHolderIdAndAccountStatusIsFalse(String accountNum , AccountHolder accountHolder);
 
-    Page<Account> findAccountsByMemberId(Member member, Pageable pageable);
+    Page<Account> findAccountsByMemberIdAndAccountStatusIsFalse(Member member, Pageable pageable);
 
-    Page<Account> findAccountsByAccountHolderId(AccountHolder accountHolder , Pageable pageable);
+    Page<Account> findAccountsByAccountHolderIdAndAccountStatusIsFalse(AccountHolder accountHolder , Pageable pageable);
 
-    int countByMemberId(Member member);
+    int countByMemberIdAndAccountStatusIsFalse(Member member);
 
-    int countByAccountHolderId(AccountHolder accountHolder);
+    int countByAccountHolderIdAndAccountStatusIsFalse(AccountHolder accountHolder);
 
-
+    List<Account> findAccountsByAccountHolderIdAndAccountStatusIsFalse(AccountHolder accountHolder);
 }

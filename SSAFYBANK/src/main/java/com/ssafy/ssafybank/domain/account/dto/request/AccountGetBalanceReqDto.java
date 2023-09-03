@@ -11,10 +11,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AccountGetPasswordReqDto {
+public class AccountGetBalanceReqDto {
     @NotNull
     @NotEmpty
-    private String accountHolderUuid;
+    @Size(max = 5)
+    private String accountPass;
     @NotNull
     @NotEmpty
     @Size(max = 20)

@@ -1,12 +1,8 @@
 package com.ssafy.ssafybank.domain.transfer.service;
 
-import com.ssafy.ssafybank.domain.account.dto.response.GetAccountRespDto;
 import com.ssafy.ssafybank.domain.account.dto.response.PageInfo;
 import com.ssafy.ssafybank.domain.account.entity.Account;
 import com.ssafy.ssafybank.domain.account.repository.AccountRepository;
-import com.ssafy.ssafybank.domain.accountHolder.dto.response.AccountHolderListRespDto;
-import com.ssafy.ssafybank.domain.accountHolder.entity.AccountHolder;
-import com.ssafy.ssafybank.domain.accountHolder.repository.AccountHolderRepository;
 import com.ssafy.ssafybank.domain.member.entity.Member;
 import com.ssafy.ssafybank.domain.member.repository.MemberRepository;
 import com.ssafy.ssafybank.domain.transfer.dto.request.GetTransferListReqDto;
@@ -45,9 +41,9 @@ public class TransferServiceImpl implements  TransferService{
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             //출금 계좌
-            Account senderAccount = accountRepository.findAccountByAccountNum(transferDepositReqDto.getSenderAccountNum());
+            Account senderAccount = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(transferDepositReqDto.getSenderAccountNum());
             //입금 계좌
-            Account recAccount = accountRepository.findAccountByAccountNum(transferDepositReqDto.getRecAccountNum());
+            Account recAccount = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(transferDepositReqDto.getRecAccountNum());
             // 출금계좌와 입금계좌가 동일하면 안됨
             if(transferDepositReqDto.getSenderAccountNum().equals(transferDepositReqDto.getRecAccountNum())){
                 throw new CustomApiException("입 출금 계좌가 중복됩니다.");
@@ -104,7 +100,7 @@ public class TransferServiceImpl implements  TransferService{
     public List<GetTransferListRespDto> getTransferList(Pageable fixedPageable, GetTransferListReqDto getTransferListReqDto, String memberUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
-            Account account = accountRepository.findAccountByAccountNum(getTransferListReqDto.getAccountNum());
+            Account account = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(getTransferListReqDto.getAccountNum());
             if(account == null){
                 throw new CustomApiException("계좌번호가 잘못되었습니다.");
             }
@@ -153,7 +149,7 @@ public class TransferServiceImpl implements  TransferService{
     public PageInfo getPage(Pageable fixedPageable, String memberUuid, GetTransferListReqDto getTransferListReqDto) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
-            Account account = accountRepository.findAccountByAccountNum(getTransferListReqDto.getAccountNum());
+            Account account = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(getTransferListReqDto.getAccountNum());
             if(account == null){
                 throw new CustomApiException("계좌번호가 잘못되었습니다.");
             }
