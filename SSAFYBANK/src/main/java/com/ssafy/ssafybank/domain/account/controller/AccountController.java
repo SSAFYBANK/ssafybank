@@ -93,7 +93,7 @@ public class AccountController {
         String memberUuid = "1"; // 강제로 준 값, 로그인 구현 시 이 부분만 바뀜
         AccountGetBalanceRespDto accountGetBalanceRespDto = accountService.getBalance(accountGetBalanceReqDto, memberUuid);
 
-            return new ResponseEntity<>(new ResponseDto<>(1, "성공", accountGetBalanceRespDto), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "성공", accountGetBalanceRespDto), HttpStatus.OK);
 
     }
 }

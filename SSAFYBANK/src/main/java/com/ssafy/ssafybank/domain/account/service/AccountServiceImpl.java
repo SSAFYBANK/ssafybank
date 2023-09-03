@@ -51,10 +51,6 @@ public class AccountServiceImpl implements AccountService {
             if(accountHolder == null){
                 throw new CustomApiException("예금주가 잘못되었습니다.");
             }
-            int cnt = accountRepository.countByAccountHolderId(accountHolder);
-            if(cnt>=6){
-                throw new CustomApiException("예금주당 계좌는 최대 3개 만들 수 있습니다.");
-            }
             String accountPassword = accountCreateRequestDto.getAccountPassword();
             if (accountPassword.length() != 4) {
                 throw new CustomApiException("비밀번호는 4글자만 가능합니다.");
@@ -96,9 +92,9 @@ public class AccountServiceImpl implements AccountService {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-        Page<Account> accountList = accountRepository.findAccountsByMemberIdAndAccountStatusIsFalse(member,page);
-        List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
-        for(Account account : accountList) {
+            Page<Account> accountList = accountRepository.findAccountsByMemberIdAndAccountStatusIsFalse(member,page);
+            List<GetAccountRespDto> getAccountRespDtos = new ArrayList<>();
+            for(Account account : accountList) {
 //            if (account.getAccount_status() == false) { //status가 활성화상태이면
                 String accountHolderName = account.getAccountHolderId().getAccountHolderName();
                 String accountNum = account.getAccountNum();
@@ -114,8 +110,8 @@ public class AccountServiceImpl implements AccountService {
                         .build();
                 getAccountRespDtos.add(getAccountRespDto);
 //            }
-        }
-        return getAccountRespDtos;
+            }
+            return getAccountRespDtos;
         } else {
             //멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
             //예외 종류 별로 code를 정해서 줘야할듯??

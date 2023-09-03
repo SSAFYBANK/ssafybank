@@ -14,20 +14,20 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface AccountService {
-   Boolean createAccount(AccountCreateRequestDto requestDto, String memberUuid);
+ Boolean createAccount(AccountCreateRequestDto requestDto, String memberUuid);
 
-    AccountGetPasswordRespDto getPassword(AccountGetPasswordReqDto accountGetPasswordReqDto, String memberUuid);
+ AccountGetPasswordRespDto getPassword(AccountGetPasswordReqDto accountGetPasswordReqDto, String memberUuid);
 
-    List<GetAccountRespDto> getAccountList(Pageable page, String memberUuid);
+ List<GetAccountRespDto> getAccountList(Pageable page, String memberUuid);
 
-    PageInfo getPageInfo(Pageable fixedPageable, String memberUuid);
+ PageInfo getPageInfo(Pageable fixedPageable, String memberUuid);
 
-    List<GetAccountRespDto> getHolderAccountList(Pageable fixedPageable, String memberUuid, String accountHolderUuid);
+ List<GetAccountRespDto> getHolderAccountList(Pageable fixedPageable, String memberUuid, String accountHolderUuid);
 
-    PageInfo getPageInfoHolder(Pageable fixedPageable, String memberUuid, String accountHolderUuid);
+ PageInfo getPageInfoHolder(Pageable fixedPageable, String memberUuid, String accountHolderUuid);
 
-    Boolean deleteAccount(AccountDeleteRequestDto accountDeleteRequestDto, String memberUuid);
+ Boolean deleteAccount(AccountDeleteRequestDto accountDeleteRequestDto, String memberUuid);
 
-    AccountGetBalanceRespDto getBalance(AccountGetBalanceReqDto accountGetBalanceReqDto, String memberUuid);
+ AccountGetBalanceRespDto getBalance(AccountGetBalanceReqDto accountGetBalanceReqDto, String memberUuid);
 }
 

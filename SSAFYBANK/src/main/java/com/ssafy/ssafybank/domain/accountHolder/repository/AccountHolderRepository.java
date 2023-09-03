@@ -1,6 +1,5 @@
 package com.ssafy.ssafybank.domain.accountHolder.repository;
 
-import com.ssafy.ssafybank.domain.account.entity.Account;
 import com.ssafy.ssafybank.domain.accountHolder.entity.AccountHolder;
 import com.ssafy.ssafybank.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AccountHolderRepository extends JpaRepository<AccountHolder, Long> {
-   Optional<List<AccountHolder>> findAccountHoldersByMemberId(Member member);
-   AccountHolder findByAccountHolderUuid(String accountHolderUuid);
-   Optional<AccountHolder> findAccountHolderByMemberIdAndAccountHolderNameAndAccountHolderUuid(Member member , String AHN, String AHU);
+   Optional<List<AccountHolder>> findAccountHoldersByMemberIdAndAccountHolderStatusIsFalse(Member member);
+   AccountHolder findByAccountHolderUuidAndAccountHolderStatusIsFalse(String accountHolderUuid);
+   Optional<AccountHolder> findAccountHolderByMemberIdAndAccountHolderNameAndAccountHolderUuidAndAccountHolderStatusIsFalse(Member member , String AHN, String AHU);
    int countAccountHolderByMemberId(Member member);
 }
