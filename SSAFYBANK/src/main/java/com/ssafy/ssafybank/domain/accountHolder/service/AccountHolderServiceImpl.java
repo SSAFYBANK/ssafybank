@@ -36,7 +36,7 @@ public class AccountHolderServiceImpl implements AccountHolderService {
             Member member = memberOptional.get();
             String accountUuid = UUID.randomUUID().toString();
             int cnt = accountHolderRepository.countAccountHolderByMemberId(member);
-            if(cnt >= 4){
+            if(cnt >= 3){
                 throw new CustomApiException("예금주는 최대 3명 만들 수 있습니다.");
             }
             accountHolderRepository.save(accountHolderCreate.toAccountHolderEntity(member, accountUuid));
