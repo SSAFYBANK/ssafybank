@@ -27,7 +27,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=e96444e9bce9fc9c391e1db8825252eb"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:5173/login"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&redirect_uri=http://www.ssafybank.com/login"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
