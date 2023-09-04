@@ -8,6 +8,7 @@ import com.ssafy.ssafybank.global.ex.CustomApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class ExchangeRateServiceImpl implements ExchangeRateService {
 
     private final ExchangeRateRepository exchangeRateRepository;
-
+    @Transactional
     @Override
     public List<ExchangeRateResponseDto> getExchangeRates(ExchangeRateRequestDto requestDto) {
 

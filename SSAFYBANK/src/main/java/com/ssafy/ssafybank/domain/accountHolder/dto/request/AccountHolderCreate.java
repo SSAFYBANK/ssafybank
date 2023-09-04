@@ -18,7 +18,7 @@ public class AccountHolderCreate {
 
     @NotNull
     @NotEmpty
-    @Size(max = 20)
+    @Size(max = 10)
     private String accountHolderName;
 
 

@@ -59,7 +59,11 @@ public class AccountServiceImpl implements AccountService {
             if (accountPassword.length() != 4) {
                 throw new CustomApiException("비밀번호는 4글자만 가능합니다.");
             }
-            accountRepository.save(accountCreateRequestDto.toAccountEntity(member, accountHolder, bank));
+            int digit = accountRepository.countRows();
+            if(digit>=9999){
+                digit -=9998;
+            }
+            accountRepository.save(accountCreateRequestDto.toAccountEntity(member, accountHolder, bank,digit));
             return true;
         } else {
             //멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
@@ -123,7 +127,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
     }
-
+    @Transactional
     @Override
     public PageInfo getPageInfo(Pageable fixedPageable, String memberUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
@@ -137,7 +141,7 @@ public class AccountServiceImpl implements AccountService {
         }
         throw new CustomApiException("accessToken정보가 잘못되었습니다.");
     }
-
+    @Transactional
     @Override
     public List<GetAccountRespDto> getHolderAccountList(Pageable fixedPageable, String memberUuid, String accountHolderUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
@@ -170,7 +174,7 @@ public class AccountServiceImpl implements AccountService {
             throw new CustomApiException("accessToken정보가 잘못되었습니다.");
         }
     }
-
+    @Transactional
     @Override
     public PageInfo getPageInfoHolder(Pageable fixedPageable, String memberUuid, String accountHolderUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
@@ -227,7 +231,7 @@ public class AccountServiceImpl implements AccountService {
             throw new CustomApiException("accessToken정보가 잘못되었습니다.");
         }
     }
-
+    @Transactional
     @Override
     public AccountGetBalanceRespDto getBalance(AccountGetBalanceReqDto accountGetBalanceReqDto, String memberUuid) {
         Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);

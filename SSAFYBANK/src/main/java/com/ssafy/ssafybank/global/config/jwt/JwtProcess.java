@@ -31,6 +31,19 @@ public class JwtProcess {
         return jwtToken;
     }
 
+    public static String reissueAccessToken(String uuid , String role) {
+        String jwtToken = JWT.create()
+                .withSubject("ssafybank")//토큰의 제목
+                //1시간
+                // .withExpiresAt(new Date(System.currentTimeMillis() + JwtVO.EXPIRATION_TIME))//만료시간= 헌재시간 + 유효기간
+                .withClaim("memberUuid", uuid)///나중에 유유아이디로 바꾸자
+                .withClaim("role", role + "")//String이 되기 위해 + "" 붙여 주는 것 string이 들어와야 함
+                .sign(Algorithm.HMAC512(JwtVO.SECRET));
+
+        System.out.println(JwtVO.TOKEN_PREFIX + jwtToken);
+        return jwtToken;
+    }
+
 
     // 액세스 토큰 검증 (return 되는 LoginUser 객체를 강제로 시큐리티 세션에 직접 주입할 예정)
     public static LoginUser verifyAccessToken(String token) {

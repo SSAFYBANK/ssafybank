@@ -45,4 +45,7 @@ public class Member {
 		this.status = status;
 		this.createdDate = createdDate;
 	}
+	public void updateUuid(String uuid){
+		this.memberUuid = uuid;
+	}
 }

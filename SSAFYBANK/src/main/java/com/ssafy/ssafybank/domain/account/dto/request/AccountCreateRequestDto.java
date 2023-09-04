@@ -30,8 +30,8 @@ public class AccountCreateRequestDto {
     private BankRepository bankRepository;
     private AccountHolderRepository accountHolderRepository;
 
-    public Account toAccountEntity(Member member, AccountHolder accountHolder, Bank bank) {
-        String accountNum = generateAccountNum();
+    public Account toAccountEntity(Member member, AccountHolder accountHolder, Bank bank, int dbValue) {
+        String accountNum = generateAccountNum(dbValue);
         return Account.builder()
                 .createdDate(LocalDateTime.now())
                 .accountPassword(this.accountPassword)
@@ -45,13 +45,40 @@ public class AccountCreateRequestDto {
     }
 
     // 계좌 번호
-    private String generateAccountNum() {
-        StringBuilder accountNumBuilder = new StringBuilder();
+    private static String generateAccountNum(int dbValue) {
+        StringBuilder accountNumBuilder = new StringBuilder("369"); // 맨 앞에 369를 붙임
+
+        // 난수 4자리를 생성
         Random random = new Random();
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 4; i++) {
             int digit = random.nextInt(10); // 0부터 9까지 랜덤
             accountNumBuilder.append(digit);
         }
+
+        int incrementedValue = dbValue + 1; // DB에서 가져온 값에 1을 더함
+        String incrementedValueStr = String.valueOf(incrementedValue); // 정수를 문자열로 변환
+
+        // 4자리를 채우기 위해 필요한 0의 개수 계산
+        int numberOfZerosNeeded = 4 - incrementedValueStr.length();
+
+        // 필요한 0을 추가
+        for (int i = 0; i < numberOfZerosNeeded; i++) {
+            accountNumBuilder.append("0");
+        }
+
+        // DB에서 가져온 값 + 1을 추가
+        accountNumBuilder.append(incrementedValueStr);
+
+        // 마지막 1자리 계산 (12자리 숫자의 각 자릿수를 더한 후 10으로 나눈 값)
+        int sum = 0;
+        for (int i = 0; i < accountNumBuilder.length(); i++) {
+            sum += Character.getNumericValue(accountNumBuilder.charAt(i));
+        }
+        int lastDigit = sum % 10;
+
+        // 마지막 자리를 붙임
+        accountNumBuilder.append(lastDigit);
+
         return accountNumBuilder.toString();
     }
 }
