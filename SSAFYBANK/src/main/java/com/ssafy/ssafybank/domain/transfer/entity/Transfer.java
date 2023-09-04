@@ -23,7 +23,7 @@ public class Transfer {
 	@JoinColumn(name = "withdraw_account_id")
 	private Account withdrawAccountId;
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "deposita_ccount_id")
+	@JoinColumn(name = "deposit_account_id")
 	private Account depositAccountId;
 	@Column(nullable = false)
 	private Long amount;
