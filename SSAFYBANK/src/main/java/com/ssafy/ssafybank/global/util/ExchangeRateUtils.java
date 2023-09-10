@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,14 +33,16 @@ public class ExchangeRateUtils {
 	@Autowired
 	private ExchangeRateRepository exchangeRateRepository;
 
-	@Scheduled(cron = "0 0 11 ? * MON-FRI")  // 초 분 시 일 월 요일
+	@Scheduled(cron = "0 10 11 ? * MON-FRI", zone = "Asia/Seoul")  // 초 분 시 일 월 요일
 	public List<JSONObject> getExchangeRates() {
 		BufferedReader reader;
 		String line;
 		StringBuffer responseContent = new StringBuffer();
 
 		String authKey = "RNH2Dx2huEfUOvrZPC0wt2eqh8Wouf1z";
-		String searchDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+		String searchDate = sdf.format(new Date());
 		String dataType = "AP01";
 		List<JSONObject> exchangeRatesList = new ArrayList<>();
 
@@ -89,7 +92,7 @@ public class ExchangeRateUtils {
 				}
 				reader.close();
 			}
-			System.out.println("환율" + responseContent.toString());
+		//	System.out.println("환율" + responseContent.toString());
 
 		} catch (IOException | JSONException e) {
 			throw new RuntimeException(e);
