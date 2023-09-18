@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import com.ssafy.ssafybank.global.ex.CustomApiException;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -41,26 +43,31 @@ public class AccountServiceImpl implements AccountService {
 	@Transactional
 	@Override
 	public Boolean createAccount(AccountCreateRequestDto accountCreateRequestDto, String memberUuid) {
+		log.info("AccountServiceImpl_createAccount -> 새로운 계좌 생성");
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
 		if (memberOptional.isPresent()) {
 			Member member = memberOptional.get();
 			Integer bankCode = accountCreateRequestDto.getBankCode();
 			Bank bank = bankRepository.findByBankCode(bankCode);
 			if (bank == null) {
+				log.error("AccountServiceImpl_createAccount -> 은행코드가 잘못되었습니다.");
 				throw new CustomApiException("은행 코드가 잘못되었습니다.");
 			}
 			String accountHolderUuid = accountCreateRequestDto.getAccountHolderUuid();
 			AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(
 				accountHolderUuid);
 			if (accountHolder == null) {
+				log.error("AccountServiceImpl_createAccount -> 예금주가 잘못되었습니다.");
 				throw new CustomApiException("예금주가 잘못되었습니다.");
 			}
 			int cnt = accountRepository.countByAccountHolderIdAndAccountStatusIsFalse(accountHolder);
 			if (cnt >= 5) {
+				log.error("AccountServiceImpl_createAccount -> 예금주당 계좌는 최대 5개 만들 수 있습니다.");
 				throw new CustomApiException("예금주당 계좌는 최대 5개 만들 수 있습니다.");
 			}
 			String accountPassword = accountCreateRequestDto.getAccountPassword();
 			if (accountPassword.length() != 4) {
+				log.error("AccountServiceImpl_createAccount -> 비밀번호는 4글자만 가능합니다.");
 				throw new CustomApiException("비밀번호는 4글자만 가능합니다.");
 			}
 			int digit = accountRepository.countRows();
@@ -68,35 +75,38 @@ public class AccountServiceImpl implements AccountService {
 				digit -= 9998;
 			}
 			accountRepository.save(accountCreateRequestDto.toAccountEntity(member, accountHolder, bank, digit));
+			log.info("AccountServiceImpl_createAccount -> 새로운 계좌 생성 성공한 사용자 정보: {}" , memberUuid);
 			return true;
 		} else {
-			//멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
-			//예외 종류 별로 code를 정해서 줘야할듯??
-			throw new CustomApiException("accessToken정보가 잘못되었습니다.");
+			log.error("AccountServiceImpl_createAccount -> accessToken 정보가 잘못되었습니다.");
+			throw new CustomApiException("accessToken 정보가 잘못되었습니다.");
 		}
 	}
 
 	@Transactional
 	@Override
 	public AccountGetPasswordRespDto getPassword(AccountGetPasswordReqDto accountGetPasswordReqDto, String memberUuid) {
+		log.info("AccountServiceImpl_getPassword -> 비밀번호 찾기");
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
 		if (memberOptional.isPresent()) {
 			AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(
 				accountGetPasswordReqDto.getAccountHolderUuid());
 			if (accountHolder == null) {
+				log.error("AccountServiceImpl_getPassword -> 예금주가 잘못되었습니다.");
 				throw new CustomApiException("예금주가 잘못되었습니다.");
 			}
 			Account account = accountRepository.findAccountByAccountNumAndAccountHolderIdAndAccountStatusIsFalse(
 				accountGetPasswordReqDto.getAccountNum(), accountHolder);
 			if (account == null) {
+				log.error("AccountServiceImpl_getPassword -> 예금주 정보와 계좌번호가 일치하지 않습니다.");
 				throw new CustomApiException("예금주 정보와 계좌번호가 일치하지 않습니다");
 			}
 			AccountGetPasswordRespDto accountGetPasswordRespDto = new AccountGetPasswordRespDto(
 				account.getAccountPassword(), account.getAccountNum());
+			log.info("AccountServiceImpl_getPassword -> 비밀번호 찾기 성공한 사용자 정보 : {}",memberUuid);
 			return accountGetPasswordRespDto;
 		} else {
-			//멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
-			//예외 종류 별로 code를 정해서 줘야할듯??
+			log.error("AccountServiceImpl_getPassword -> accessToken 정보가 잘못되었습니다.");
 			throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 		}
 
@@ -105,6 +115,7 @@ public class AccountServiceImpl implements AccountService {
 	@Transactional
 	@Override
 	public List<GetAccountRespDto> getAccountList(Pageable page, String memberUuid) {
+		log.info("AccountServiceImpl_getAccountList -> 예금주 리스트 조회");
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
 		if (memberOptional.isPresent()) {
 			Member member = memberOptional.get();
@@ -125,12 +136,11 @@ public class AccountServiceImpl implements AccountService {
 					.balance(balance)
 					.build();
 				getAccountRespDtos.add(getAccountRespDto);
-				//            }
+				log.info("AccountServiceImpl_getAccountList -> 예금주 리스트 조회 성공한 사용자 정보 : {}",memberUuid);
 			}
 			return getAccountRespDtos;
 		} else {
-			//멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
-			//예외 종류 별로 code를 정해서 줘야할듯??
+			log.error("AccountServiceImpl_getAccountList -> accessToken 정보가 잘못되었습니다.");
 			throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 		}
 
@@ -146,9 +156,10 @@ public class AccountServiceImpl implements AccountService {
 				fixedPageable);
 			int totalCnt = accountRepository.countByMemberIdAndAccountStatusIsFalse(member);
 			boolean isNext = !accountList.isLast();
-
+			log.info("AccountServiceImpl_getPageInfo -> 사용자 정보 : {}",memberUuid);
 			return new PageInfo(isNext, totalCnt);
 		}
+		log.error("AccountServiceImpl_getPageInfo -> accessToken 정보가 잘못되었습니다.");
 		throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 	}
 
@@ -161,6 +172,7 @@ public class AccountServiceImpl implements AccountService {
 			AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(
 				accountHolderUuid);
 			if (accountHolder == null) {
+				log.error("AccountServiceImpl_getHolderAccountList -> 예금주 정보가 잘못되었습니다.");
 				throw new CustomApiException("예금주 키 정보가 잘못되었습니다.");
 			}
 			Page<Account> accountList = accountRepository.findAccountsByAccountHolderIdAndAccountStatusIsFalse(
@@ -181,10 +193,10 @@ public class AccountServiceImpl implements AccountService {
 					.build();
 				getAccountRespDtos.add(getAccountRespDto);
 			}
+			log.info("AccountServiceImpl_getHolderAccountList -> 예금주 리스트 조회한 사용자 정보 : {}",memberUuid);
 			return getAccountRespDtos;
 		} else {
-			//멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
-			//예외 종류 별로 code를 정해서 줘야할듯??
+			log.error("AccountServiceImpl_getHolderAccountList -> accessToken 정보가 잘못되었습니다.");
 			throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 		}
 	}
@@ -203,9 +215,10 @@ public class AccountServiceImpl implements AccountService {
 				accountHolder, fixedPageable);
 			int totalCnt = accountRepository.countByAccountHolderIdAndAccountStatusIsFalse(accountHolder);
 			boolean isNext = !accountList.isLast();
-
+			log.info("AccountServiceImpl_getPageInfoHolder -> : {}",memberUuid);
 			return new PageInfo(isNext, totalCnt);
 		}
+		log.error("AccountServiceImpl_getPageInfoHolder -> accessToken 정보가 잘못되었습니다.");
 		throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 	}
 
@@ -222,12 +235,14 @@ public class AccountServiceImpl implements AccountService {
 
 			Bank bank = bankRepository.findByBankCode(bankCode);
 			if (bank == null) {
+				log.error("AccountServiceImpl_deleteAccount -> 은행 정보를 찾을 수 없습니다.");
 				throw new CustomApiException("은행 정보를 찾을 수 없습니다.");
 			}
 
 			AccountHolder accountHolder = accountHolderRepository.findByAccountHolderUuidAndAccountHolderStatusIsFalse(
 				accountHolderUuid);
 			if (accountHolder == null) {
+				log.error("AccountServiceImpl_deleteAccount -> 예금주 정보를 찾을 수 없습니다.");
 				throw new CustomApiException("예금주 정보를 찾을 수 없습니다.");
 			}
 
@@ -242,16 +257,20 @@ public class AccountServiceImpl implements AccountService {
 						account.deactivateAccount();
 						return true;
 					} else {
+						log.error("AccountServiceImpl_deleteAccount -> 은행 정보가 일치하지 않숩니다.");
 						throw new CustomApiException("은행 정보가 일치하지 않습니다.");
 					}
 
 				} else {
+					log.error("AccountServiceImpl_deleteAccount -> 비밀번호가 일치하지 않습니다.");
 					throw new CustomApiException("비밀번호가 일치하지 않습니다.");
 				}
 			} else {
+				log.error("AccountServiceImpl_deleteAccount -> 계좌 정보를 찾을 수 없습니다.");
 				throw new CustomApiException("계좌 정보를 찾을 수 없습니다.");
 			}
 		} else {
+			log.error("AccountServiceImpl_deleteAccount -> accessToken 정보가 잘못되었습니다.");
 			throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 		}
 	}
@@ -264,9 +283,11 @@ public class AccountServiceImpl implements AccountService {
 			Account account = accountRepository.findAccountByAccountNumAndAccountStatusIsFalse(
 				accountGetBalanceReqDto.getAccountNum());
 			if (account == null) {
+				log.error("AccountServiceImpl_getBalance -> 계좌 정보를 찾을 수 없습니다.");
 				throw new CustomApiException("계좌 정보를 찾을 수 없습니다.");
 			}
 			if (!account.getAccountPassword().equals(accountGetBalanceReqDto.getAccountPassword())) {
+				log.error("AccountServiceImpl_getBalance -> 비밀번호가 일치하지 않습니다.");
 				throw new CustomApiException("비밀번호가 일치하지 않습니다.");
 			}
 			AccountGetBalanceRespDto accountGetBalanceRespDto = AccountGetBalanceRespDto
@@ -276,9 +297,10 @@ public class AccountServiceImpl implements AccountService {
 				.bankName(account.getBankId().getBankName())
 				.accountHolderName(account.getAccountHolderId().getAccountHolderName())
 				.build();
-
+			log.info("AccountServiceImpl_getBalance 잔액 조회를 성공한 사용자 정보 -> : {}",memberUuid);
 			return accountGetBalanceRespDto;
 		}
+		log.error("AccountServiceImpl_getBalance -> accessToken 정보가 잘못되었습니다.");
 		throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 	}
 }
