@@ -5,11 +5,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+@Slf4j
 @Service
 public class KakaoLoginServiceImpl implements KakaoLoginService {
     public String getKakaoAccessToken (String code) {
+        log.info("KakaoLoginServiceImpl_getKakaoAccessToken -> 카카오 엑세스 토큰 반환");
         String access_Token = "";
         String refresh_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
@@ -67,6 +69,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
 
     public String createKakaoUser(String token) {
+        log.info("KakaoLoginServiceImpl_createKakaoUser -> 카카오 회원가입");
         String kakaoId = "";
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
