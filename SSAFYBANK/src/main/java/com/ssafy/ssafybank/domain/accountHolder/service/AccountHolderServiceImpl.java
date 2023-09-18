@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.ssafybank.domain.account.entity.Account;
@@ -21,7 +22,7 @@ import com.ssafy.ssafybank.domain.member.repository.MemberRepository;
 import com.ssafy.ssafybank.global.ex.CustomApiException;
 
 import lombok.RequiredArgsConstructor;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AccountHolderServiceImpl implements AccountHolderService {
@@ -32,7 +33,7 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 	@Transactional
 	@Override
 	public Boolean createAccountHolder(AccountHolderCreate accountHolderCreate, String memberUuid) {
-
+		log.info("AccountHolderServiceImpl_createAccountHolder -> 새로운 예금주 생성");
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
 
 		if (memberOptional.isPresent()) {
@@ -40,14 +41,14 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 			String accountUuid = UUID.randomUUID().toString();
 			int cnt = accountHolderRepository.countAccountHolderByMemberIdAndAccountHolderStatusIsFalse(member);
 			if (cnt >= 3) {
+				log.error("AccountHolderServiceImpl_createAccountHolder -> 예금주는 최대 3명 만들 수 있습니다.");
 				throw new CustomApiException("예금주는 최대 3명 만들 수 있습니다.");
 			}
 			accountHolderRepository.save(accountHolderCreate.toAccountHolderEntity(member, accountUuid));
-
-			return true; // Account holder creation successful
+			log.info("AccountHolderServiceImpl_createAccountHolder -> 새로운 예금주 생성 성공한 사용자 정보: {}" , memberUuid);
+			return true;
 		} else {
-			//멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
-			//예외 종류 별로 code를 정해서 줘야할듯??
+			log.error("AccountHolderServiceImpl_createAccountHolder -> accessToken 정보가 잘못되었습니다.");
 			throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 		}
 	}
@@ -55,6 +56,7 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 	@Transactional
 	@Override
 	public List<AccountHolderListRespDto> getAccountHolderList(String memberUuid) {
+		log.info("AccountHolderServiceImpl_getAccountHolderList -> 예금주 리스트 조회");
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
 		if (memberOptional.isPresent()) {
 			Member member = memberOptional.get();
@@ -70,14 +72,14 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 					);
 					accountHolderRespList.add(respDto);
 				}
+				log.info("AccountHolderServiceImpl_getAccountHolderList -> 예금주 리스트 조회 성공한 사용자 정보: {}" , memberUuid);
 				return accountHolderRespList;
 			} else {
-				return new ArrayList<>();  // 빈 리스트를 반환
+				return new ArrayList<>();
 			}
 
 		} else {
-			//멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
-			//예외 종류 별로 code를 정해서 줘야할듯??
+			log.error("AccountHolderServiceImpl_getAccountHolderList -> accessToken 정보가 잘못되었습니다.");
 			throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 		}
 
@@ -86,6 +88,7 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 	@Transactional
 	@Override
 	public Boolean deleteAccountHolder(AccountHolderDelete accountHolderDelete, String memberUuid) {
+		log.info("AccountHolderServiceImpl_deleteAccountHolder -> 예금주 삭제");
 		Optional<Member> memberOptional = memberRepository.findByMemberUuid(memberUuid);
 
 		if (memberOptional.isPresent()) {
@@ -101,16 +104,14 @@ public class AccountHolderServiceImpl implements AccountHolderService {
 				for (Account account : accounts) {
 					account.deactivateAccount();
 				}
-				accountHolder.deactivateAccountHolder();// Account holder deletion
-
-				return true; // Account
+				accountHolder.deactivateAccountHolder();
+				log.info("AccountHolderServiceImpl_deleteAccountHolder -> 예금주 삭제 성공한 사용자 정보: {}" , memberUuid);
+				return true;
 			} else {
 				throw new CustomApiException("예금주 토큰정보가 잘못되었습니다.");
 			}
-
 		} else {
-			//멤버가 없다는 것은 accessToken정보가 잘못 되었다는 것
-			//예외 종류 별로 code를 정해서 줘야할듯??
+			log.error("AccountHolderServiceImpl_deleteAccountHolder -> accessToken 정보가 잘못되었습니다.");
 			throw new CustomApiException("accessToken정보가 잘못되었습니다.");
 		}
 	}
